@@ -1,0 +1,30 @@
+/**
+ * Defines the primary database connection for the application.
+ * This datasource block specifies the database provider which is PostgreSQL,
+ * and the connection URL, which is typically loaded from an environment variable.
+ * Adjust the URL as needed to match your deployment environment.
+ */
+datasource db {
+    url      = env("DATABASE_URL")
+    provider = "postgresql"
+}
+
+/**
+ * Configures the Prisma Client generator.
+ * This block specifies that the Prisma Client should be generated using the JavaScript provider,
+ * and the output directory for the generated client code.
+ */
+generator client {
+    provider = "prisma-client-js"
+}
+
+/**
+ * Defines the User model for the application.
+ * (Should be changed to match your application's user schema.)
+ */
+model User {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    email     String   @unique
+    name      String?
+}
