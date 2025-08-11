@@ -1,26 +1,23 @@
 import express from "express";
-import helloRouter from "./routes/helloRoutes";
 import { errorHandler } from "./middleware/erorrHandler";
-import { checkDatabaseConnection } from "./database/database";
+import userRoutes from "./features/user/user.routes";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Checking Database Connection
-checkDatabaseConnection();
-
-// Routes
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Welcome to the Mind Forge API",
-    timestamp: new Date().toISOString(),
-  });
-});
-
-app.use(helloRouter);
+app.use(
+  cors({
+    origin: "localhost:5173",
+    credentials: true,
+  }),
+);
 
 // Global error handler (should be after routes)
+app.use("/api/auth", userRoutes);
+
 app.use(errorHandler);
 
 export default app;
