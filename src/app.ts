@@ -1,5 +1,5 @@
 import express from "express";
-import helloRouter from "./routes/helloRoutes";
+import helloRouter from "./features/hello/hello.routes";
 import { errorHandler } from "./middleware/erorrHandler";
 import { checkDatabaseConnection } from "./database/database";
 
