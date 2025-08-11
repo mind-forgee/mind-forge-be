@@ -15,7 +15,6 @@ app.use(
   }),
 );
 
-// Global error handler (should be after routes)
 app.use("/api/auth", userRoutes);
 
 app.use(errorHandler);
