@@ -19,6 +19,7 @@ export default [
           endOfLine: "auto",
         },
       ],
+      "@typescript-eslint/no-explicit-any": "off",
     },
     languageOptions: {
       ecmaVersion: 2022,
