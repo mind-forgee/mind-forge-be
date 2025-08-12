@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import { NextFunction, Request, Response } from "express";
 import {
   createUserService,
@@ -10,7 +9,6 @@ import { createUserSchema, loginUserSchema } from "./user.schema";
 import z from "zod";
 import { AuthRequest } from "../../middleware/verifyToken";
 
-dotenv.config();
 type InferBody<T extends z.ZodTypeAny> = z.infer<T>;
 
 // user.controller.ts
@@ -23,7 +21,7 @@ export const createUser = async (
     typeof createUserSchema
   >;
   try {
-    const result = await createUserService(full_name, email, password);
+    await createUserService(full_name, email, password);
     return res.status(200).json({ message: "Sign Up Success!" });
   } catch (err) {
     next(err);
@@ -65,7 +63,7 @@ export const logoutUser = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await logoutUserService(res);
+    await logoutUserService(res);
     return res.status(200).json({ message: "Log Out Success" });
   } catch (err) {
     next(err);

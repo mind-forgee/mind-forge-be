@@ -1,8 +1,6 @@
-import dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-
-dotenv.config();
+import config from "../config/config";
 
 export type AuthRequest = Request & {
   user?: { user_id: string; iat?: number; exp?: number };
@@ -19,7 +17,7 @@ export const verifyToken = async (
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    const decoded = jwt.verify(token, config.jwtSecret);
     const { user_id, iat, exp } = decoded as jwt.JwtPayload;
     req.user = { user_id, iat, exp };
     next();
