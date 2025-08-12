@@ -2,40 +2,58 @@ import dotenv from "dotenv";
 import { NextFunction, Request, Response } from "express";
 import {
   createUserService,
+  getUserService,
   loginUserService,
   logoutUserService,
 } from "./user.service";
-import { createUserSchema } from "./user.schema";
+import { createUserSchema, loginUserSchema } from "./user.schema";
+import z from "zod";
+import { AuthRequest } from "../../middleware/verifyToken";
 
 dotenv.config();
+type InferBody<T extends z.ZodTypeAny> = z.infer<T>;
 
+// user.controller.ts
 export const createUser = async (
-  req: Request,
+  req: Request<unknown, unknown, InferBody<typeof createUserSchema>>,
   res: Response,
   next: NextFunction,
 ) => {
-  const { full_name, email, password } = req.body;
-  console.log(req.body);
+  const { full_name, email, password } = req.body as z.infer<
+    typeof createUserSchema
+  >;
   try {
     const result = await createUserService(full_name, email, password);
     return res.status(200).json({ message: "Sign Up Success!" });
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
 
 export const loginUser = async (
-  req: Request,
+  req: Request<unknown, unknown, InferBody<typeof loginUserSchema>>,
   res: Response,
   next: NextFunction,
 ) => {
-  const data = createUserSchema.parse(req.body);
-  const { email, password } = data;
-
+  const { email, password } = req.body as z.infer<typeof loginUserSchema>;
   try {
     const result = await loginUserService(email, password, res);
-    return res.status(200).json({ message: "Sign In Success" });
+    return res.status(200).json({ message: "Sign In Success", data: result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getUser = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.user?.user_id;
+
+  try {
+    const result = await getUserService(userId as string);
+    return res.status(200).json({ result });
   } catch (err) {
     next(err);
   }

@@ -51,6 +51,20 @@ export const loginUserService = async (
   return token;
 };
 
+export const getUserService = async (user_id: string) => {
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      id: user_id,
+    },
+    select: {
+      full_name: true,
+      email: true,
+    },
+  });
+
+  return existingUser;
+};
+
 export const logoutUserService = async (res: Response) => {
   clearAuthCookie(res);
 };
