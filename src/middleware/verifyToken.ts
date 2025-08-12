@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-type AuthRequest = Request & {
+export type AuthRequest = Request & {
   user?: { user_id: string; iat?: number; exp?: number };
 };
 
@@ -14,16 +14,13 @@ export const verifyToken = async (
   next: NextFunction,
 ) => {
   const token = req.cookies?.token;
-
   if (!token) {
     throw new Error("Unauthorized");
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-
     const { user_id, iat, exp } = decoded as jwt.JwtPayload;
-
     req.user = { user_id, iat, exp };
     next();
   } catch (err) {

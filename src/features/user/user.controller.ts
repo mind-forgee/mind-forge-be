@@ -2,11 +2,13 @@ import dotenv from "dotenv";
 import { NextFunction, Request, Response } from "express";
 import {
   createUserService,
+  getUserService,
   loginUserService,
   logoutUserService,
 } from "./user.service";
 import { createUserSchema, loginUserSchema } from "./user.schema";
 import z from "zod";
+import { AuthRequest } from "../../middleware/verifyToken";
 
 dotenv.config();
 type InferBody<T extends z.ZodTypeAny> = z.infer<T>;
@@ -37,6 +39,21 @@ export const loginUser = async (
   try {
     const result = await loginUserService(email, password, res);
     return res.status(200).json({ message: "Sign In Success", data: result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getUser = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.user?.user_id;
+
+  try {
+    const result = await getUserService(userId as string);
+    return res.status(200).json({ result });
   } catch (err) {
     next(err);
   }
