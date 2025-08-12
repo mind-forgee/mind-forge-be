@@ -1,8 +1,8 @@
-import { ZodAny, ZodError } from "zod";
+import { ZodError, ZodTypeAny } from "zod";
 import { Request, Response, NextFunction } from "express";
 
 export function validate(
-  schema: ZodAny,
+  schema: ZodTypeAny,
   source: "body" | "query" | "params" = "body",
 ) {
   return (req: Request, res: Response, next: NextFunction) => {
