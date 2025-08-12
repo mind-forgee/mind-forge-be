@@ -5,6 +5,7 @@ import {
   loginUserService,
   logoutUserService,
 } from "./user.service";
+import { createUserSchema } from "./user.schema";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ export const createUser = async (
   next: NextFunction,
 ) => {
   const { full_name, email, password } = req.body;
+  console.log(req.body);
   try {
     const result = await createUserService(full_name, email, password);
     return res.status(200).json({ message: "Sign Up Success!" });
@@ -28,7 +30,9 @@ export const loginUser = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { email, password } = req.body;
+  const data = createUserSchema.parse(req.body);
+  const { email, password } = data;
+
   try {
     const result = await loginUserService(email, password, res);
     return res.status(200).json({ message: "Sign In Success" });
