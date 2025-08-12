@@ -20,6 +20,12 @@ app.use("/api/auth", userRoutes);
 // app.use('/api/course', )
 app.use('/api/topics', topicRoutes);
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Welcome to Mind Forge API",
+  });
+});
+
 app.use(errorHandler);
 
 export default app;
