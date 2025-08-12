@@ -5,8 +5,8 @@
  * Adjust the URL as needed to match your deployment environment.
  */
 datasource db {
-    url      = env("DATABASE_URL")
-    provider = "postgresql"
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
 }
 
 /**
@@ -18,13 +18,11 @@ generator client {
     provider = "prisma-client-js"
 }
 
-/**
- * Defines the User model for the application.
- * (Should be changed to match your application's user schema.)
- */
 model User {
-    id        Int      @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    email     String   @unique
-    name      String?
+    id         String   @id @default(uuid())
+    full_name  String
+    email      String   @unique
+    password   String
+    role       String   @default("user")
+    created_at DateTime @default(now())
 }
