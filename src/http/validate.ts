@@ -1,25 +1,24 @@
 import { ZodError, ZodTypeAny } from "zod";
 import { Request, Response, NextFunction } from "express";
 
-type Source = "body" | "query" | "params";
-
-export function validate(schema: ZodTypeAny, source: Source = "body") {
+export function validate(
+  schema: ZodTypeAny,
+  source: "body" | "query" | "params" = "body",
+) {
   return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const parsed = schema.parse((req as any)[source]);
-      (req as any).validated = { ...(req as any).validated, [source]: parsed };
-      next();
-    } catch (err) {
-      if (err instanceof ZodError) {
-        return res.status(400).json({
-          message: "Validation error",
-          errors: err.issues.map((i) => ({
-            path: i.path.join("."),
-            message: i.message,
-          })),
-        });
-      }
-      next(err);
+    const data = req[source];
+    const result = schema.safeParse(data);
+
+    if (!result.success) {
+      const error = result.error as ZodError;
+      const errors = error.issues.map((i) => ({
+        path: i.path.join("."),
+        message: i.message,
+      }));
+      return res.status(400).json({ message: "Validation error", errors });
     }
+
+    (req as any)[source] = result.data;
+    next();
   };
 }
