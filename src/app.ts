@@ -1,6 +1,7 @@
 import express from "express";
 import { errorHandler } from "./middleware/erorrHandler";
 import userRoutes from "./features/user/user.routes";
+import topicRoutes from './features/topic/topic.routes';
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -17,6 +18,7 @@ app.use(
 
 app.use("/api/auth", userRoutes);
 // app.use('/api/course', )
+app.use('/api/topics', topicRoutes);
 
 app.use(errorHandler);
 

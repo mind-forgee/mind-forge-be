@@ -25,4 +25,18 @@ model User {
     password   String
     role       String   @default("user")
     created_at DateTime @default(now())
+
+    // Optional relation to User model:
+    topics     Topic[]
+}
+
+model Topic {
+    id          String   @id @default(uuid())
+    name        String   @unique
+    description String?
+    createdBy   String
+    createdAt   DateTime @default(now())
+
+    // Optional relation to User model:
+    creator    User     @relation(fields: [createdBy], references: [id])
 }

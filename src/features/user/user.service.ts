@@ -47,7 +47,8 @@ export const loginUserService = async (
     throw new APIError("Invalid Credentials!");
   }
 
-  const token = generateToken({ user_id: user.id });
+  const token = generateToken({ user_id: user.id, role: user.role });
+
   setAuthCookie(token, res);
   return token;
 };
