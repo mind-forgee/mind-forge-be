@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import config from "../config/config";
+import { APIError } from "./erorrHandler";
 
 export type AuthRequest = Request & {
   user?: { user_id: string; iat?: number; exp?: number };
@@ -13,7 +14,7 @@ export const verifyToken = async (
 ) => {
   const token = req.cookies?.token;
   if (!token) {
-    throw new Error("Unauthorized");
+    throw new APIError("Unauthorized", 401);
   }
 
   try {
