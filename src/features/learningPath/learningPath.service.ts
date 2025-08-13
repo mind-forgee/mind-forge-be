@@ -9,9 +9,8 @@ export const getAllTopicsService = async () => {
 export const saveUserLearningPathService = async (
   userId: string,
   topicId: string,
-  level: string,
+  level: string
 ) => {
-  
   return await prisma.learningPath.upsert({
     where: {
       userId_topicId: {
