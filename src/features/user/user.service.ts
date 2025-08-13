@@ -5,6 +5,7 @@ import { Response } from "express";
 import { checkUser } from "../../shared/checkUser";
 import { setAuthCookie } from "../../shared/setAuthCookie";
 import { clearAuthCookie } from "../../shared/clearAuthCookie";
+import { APIError } from "../../middleware/erorrHandler";
 
 export const createUserService = async (
   full_name: string,
@@ -14,7 +15,7 @@ export const createUserService = async (
   const existingUser = await checkUser(email);
 
   if (existingUser) {
-    throw new Error("User email already exist");
+    throw new APIError("User email already exist", 400);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,12 +39,12 @@ export const loginUserService = async (
   const user = await checkUser(email);
 
   if (!user) {
-    throw new Error("Invalid Credentials!");
+    throw new APIError("Invalid Credentials!", 400);
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error("Invalid Credentials!");
+    throw new APIError("Invalid Credentials!");
   }
 
   const token = generateToken({ user_id: user.id });

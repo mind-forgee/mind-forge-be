@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import { NextFunction, Request, Response } from "express";
 import {
   createUserService,
@@ -9,36 +8,46 @@ import {
 import { createUserSchema, loginUserSchema } from "./user.schema";
 import z from "zod";
 import { AuthRequest } from "../../middleware/verifyToken";
+import { APIResponse } from "../../models/response";
 
-dotenv.config();
 type InferBody<T extends z.ZodTypeAny> = z.infer<T>;
 
 // user.controller.ts
 export const createUser = async (
   req: Request<unknown, unknown, InferBody<typeof createUserSchema>>,
-  res: Response,
+  res: Response<APIResponse>,
   next: NextFunction,
 ) => {
   const { full_name, email, password } = req.body as z.infer<
     typeof createUserSchema
   >;
   try {
-    const result = await createUserService(full_name, email, password);
-    return res.status(200).json({ message: "Sign Up Success!" });
+    await createUserService(full_name, email, password);
+    return res.status(200).json({
+      message: "Sign Up Success!",
+      status: "success",
+    });
   } catch (err) {
+    console.error("Error creating user:", err);
     next(err);
   }
 };
 
 export const loginUser = async (
   req: Request<unknown, unknown, InferBody<typeof loginUserSchema>>,
-  res: Response,
+  res: Response<APIResponse>,
   next: NextFunction,
 ) => {
   const { email, password } = req.body as z.infer<typeof loginUserSchema>;
   try {
     const result = await loginUserService(email, password, res);
-    return res.status(200).json({ message: "Sign In Success", data: result });
+    return res.status(200).json({
+      message: "Sign In Success",
+      status: "success",
+      data: {
+        token: result,
+      },
+    });
   } catch (err) {
     next(err);
   }
@@ -46,14 +55,18 @@ export const loginUser = async (
 
 export const getUser = async (
   req: AuthRequest,
-  res: Response,
+  res: Response<APIResponse>,
   next: NextFunction,
 ) => {
   const userId = req.user?.user_id;
 
   try {
     const result = await getUserService(userId as string);
-    return res.status(200).json({ result });
+    return res.status(200).json({
+      status: "success",
+      message: "Get User Success",
+      data: result,
+    });
   } catch (err) {
     next(err);
   }
@@ -61,12 +74,15 @@ export const getUser = async (
 
 export const logoutUser = async (
   req: Request,
-  res: Response,
+  res: Response<APIResponse>,
   next: NextFunction,
 ) => {
   try {
-    const result = await logoutUserService(res);
-    return res.status(200).json({ message: "Log Out Success" });
+    await logoutUserService(res);
+    return res.status(200).json({
+      status: "success",
+      message: "Log Out Success",
+    });
   } catch (err) {
     next(err);
   }

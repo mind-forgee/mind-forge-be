@@ -1,4 +1,10 @@
-import { Router } from "express";
-const router = Router();
+import express from "express";
 
-router.post("/");
+import { verifyToken } from "../../middleware/verifyToken";
+import { createCourse } from "./course.controller";
+
+const router = express.Router();
+
+router.post("/", createCourse);
+
+export default router;
