@@ -5,8 +5,8 @@
  * Adjust the URL as needed to match your deployment environment.
  */
 datasource db {
-    provider  = "postgresql"
-    url       = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 /**
@@ -25,4 +25,58 @@ model User {
     password   String
     role       String   @default("user")
     created_at DateTime @default(now())
+
+    // Optional relation to User model:
+    // topics Topic[]
+    // LearningPath LearningPath?
 }
+
+model Course {
+    id          Int       @id @default(autoincrement())
+    user_id     String
+    course_name String
+    description String
+    difficulty  String
+    created_at  String
+    Chapter     Chapter[]
+}
+
+model Chapter {
+    id           String   @id @default(uuid())
+    course_id    Int
+    order_index  Int
+    chapter_name String
+    description  String
+    content_json Json?
+    created_at   DateTime @default(now())
+    updated_at   DateTime @updatedAt
+
+    course Course @relation(fields: [course_id], references: [id])
+
+    @@unique([course_id, order_index])
+    @@index([course_id, order_index])
+}
+
+// model LearningPath {
+//     id        String   @id @default(uuid())
+//     userId    String
+//     topicId   String
+//     level     String
+//     createdAt DateTime @default(now())
+
+//     user User @relation(fields: [userId], references: [id])
+//     //   topic Topic @relation(fields: [topicId], references: [id])
+
+//     @@unique([userId]) // one topic per user
+// }
+
+// model Topic {
+//     id          String   @id @default(uuid())
+//     name        String   @unique
+//     description String?
+//     createdBy   String
+//     createdAt   DateTime @default(now())
+
+//     // Optional relation to User model:
+//     creator    User     @relation(fields: [createdBy], references: [id])
+// }

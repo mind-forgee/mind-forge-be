@@ -4,7 +4,7 @@ import config from "../config/config";
 import { APIError } from "./erorrHandler";
 
 export type AuthRequest = Request & {
-  user?: { user_id: string; iat?: number; exp?: number };
+  user?: { user_id: string; role: string; iat?: number; exp?: number };
 };
 
 export const verifyToken = async (
@@ -19,8 +19,11 @@ export const verifyToken = async (
 
   try {
     const decoded = jwt.verify(token, config.jwtSecret);
-    const { user_id, iat, exp } = decoded as jwt.JwtPayload;
-    req.user = { user_id, iat, exp };
+    const { user_id, role, iat, exp } = decoded as jwt.JwtPayload & {
+      role: string;
+    };
+    req.user = { user_id, role, iat, exp };
+
     next();
   } catch (err) {
     console.error(err);
