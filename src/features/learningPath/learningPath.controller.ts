@@ -42,18 +42,11 @@ export const saveLearningPathController = async (
       });
     }
 
-    const { topicId, level } = req.body as z.infer<
+    const { topic_id, level } = req.body as z.infer<
       typeof saveLearningPathSchema
     >;
 
-    if (!topicId || !level) {
-      return res.status(400).json({
-        status: "error",
-        message: "topicId and level are required",
-      });
-    }
-
-    const saved = await saveUserLearningPathService(topicId, level);
+    const saved = await saveUserLearningPathService(topic_id, level);
 
     res.status(201).json({
       status: "success",
