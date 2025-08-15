@@ -1,5 +1,10 @@
+import { number } from "zod";
 import prisma from "../../database/database";
-import { getResponseAI } from "../../shared/generateCourse";
+import {
+  getContentChapters,
+  getContentOutline,
+} from "../../shared/generateCourse";
+import { queue } from "../../shared/imMemoryQueue";
 
 export const getAllTopicsService = async () => {
   // return await prisma.topic.findMany({
@@ -8,31 +13,56 @@ export const getAllTopicsService = async () => {
 };
 
 export const createLearningPathService = async (
-  // userId: string,
+  user_id: string,
   topic: string,
   difficulty: string,
 ) => {
-  const course = await getResponseAI(topic, difficulty);
+  const course = await getContentOutline(topic, difficulty);
 
-  // STORING DATABASE BERDASARKAN USER_ID
+  const generatedCourse = await prisma.course.create({
+    data: {
+      user_id,
+      course_name: course.course_name,
+      description: course.description,
+      difficulty: course.difficulty,
+    },
+  });
 
-  return course;
+  queue.push(async () => {
+    console.log("Queue Running!");
+    try {
+      const generatedChapters = await getContentChapters({
+        course_name: generatedCourse.course_name,
+        description: generatedCourse.description,
+        difficulty: generatedCourse.difficulty,
+      });
 
-  // return await prisma.learningPath.upsert({
-  //   where: {
-  //     userId_topicId: {
-  //       userId,
-  //       topicId,
-  //     },
-  //   },
-  //   update: {
-  //     level,
-  //     createdAt: new Date(),
-  //   },
-  //   create: {
-  //     userId,
-  //     topicId,
-  //     level,
-  //   },
-  // });
+      await prisma.chapter.createMany({
+        data: generatedChapters.chapters.map((ch: any, idx: number) => ({
+          course_id: generatedCourse.id,
+          chapter_name: ch.chapter_name,
+          description: ch.description,
+          content_json: ch.content_json,
+          order_index: idx + 1,
+        })),
+      });
+
+      console.log(`[Queue] Chapters saved for course ${generatedCourse.id}`);
+    } catch (err) {
+      console.error(
+        `[Queue] Failed generating chapters for course ${generatedCourse.id}`,
+        err,
+      );
+    }
+  });
+  return generatedCourse;
+};
+
+export const getChapterByCourseIdService = async (courseId: string) => {
+  const chapter = await prisma.chapter.findMany({
+    where: {
+      course_id: Number(courseId),
+    },
+  });
+  return chapter;
 };

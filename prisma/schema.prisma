@@ -37,8 +37,8 @@ model Course {
     course_name String
     description String
     difficulty  String
-    created_at  String
-    Chapter     Chapter[]
+    created_at  DateTime  @default(now())
+    chapter     Chapter[]
 }
 
 model Chapter {
@@ -50,8 +50,7 @@ model Chapter {
     content_json Json?
     created_at   DateTime @default(now())
     updated_at   DateTime @updatedAt
-
-    course Course @relation(fields: [course_id], references: [id])
+    Course       Course?  @relation(fields: [course_id], references: [id])
 
     @@unique([course_id, order_index])
     @@index([course_id, order_index])

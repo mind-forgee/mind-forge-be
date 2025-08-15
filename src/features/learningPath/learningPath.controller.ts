@@ -1,12 +1,15 @@
-import { Router, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { AuthRequest } from "../../middleware/verifyToken";
 import {
   getAllTopicsService,
   createLearningPathService,
+  getChapterByCourseIdService,
 } from "./learningPath.service";
 import { APIResponse } from "../../models/response";
+import { CheckParams } from "zod/v4/core/api.cjs";
+import express from "express";
 
-const router = Router();
+const router = express.Router();
 
 export const getAllTopicsController = async (
   req: AuthRequest,
@@ -30,13 +33,18 @@ export const getAllTopicsController = async (
 
 export const createLearningPath = async (
   req: AuthRequest,
-  res: Response,
+  res: Response<APIResponse>,
   next: NextFunction,
 ) => {
+  const user_id = req.user?.user_id;
   try {
     const { topic, difficulty } = req.body;
 
-    const result = await createLearningPathService(topic, difficulty);
+    const result = await createLearningPathService(
+      user_id as string,
+      topic,
+      difficulty,
+    );
 
     return res.status(200).json({
       status: "success",
@@ -45,6 +53,30 @@ export const createLearningPath = async (
     });
   } catch (err) {
     console.log("Error Creating Course");
+    next(err);
+  }
+};
+
+type ChapterParams = {
+  courseId: string;
+};
+
+export const getChapterByCourseId = async (
+  req: Request<ChapterParams>,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
+  try {
+    const { courseId } = req.params;
+    const result = await getChapterByCourseIdService(courseId);
+
+    return res.status(200).json({
+      status: "success",
+      message: "Get chapter success",
+      data: result,
+    });
+  } catch (err) {
+    console.log("Error get course");
     next(err);
   }
 };
