@@ -6,11 +6,6 @@ import { verifyToken } from "../../middleware/verifyToken";
 
 const router = express.Router();
 
-router.post(
-  "/",
-  verifyToken,
-  validate(createTopicSchema, "body"),
-  createTopic
-);
+router.post("/", verifyToken, validate(createTopicSchema, "body"), createTopic);
 
 export default router;

@@ -7,7 +7,6 @@ export type AuthRequest = Request & {
   user?: { user_id: string; role: string; iat?: number; exp?: number };
 };
 
-
 export const verifyToken = async (
   req: AuthRequest,
   res: Response,
@@ -20,7 +19,9 @@ export const verifyToken = async (
 
   try {
     const decoded = jwt.verify(token, config.jwtSecret);
-    const { user_id, role, iat, exp } = decoded as jwt.JwtPayload & { role: string };
+    const { user_id, role, iat, exp } = decoded as jwt.JwtPayload & {
+      role: string;
+    };
     req.user = { user_id, role, iat, exp };
 
     next();

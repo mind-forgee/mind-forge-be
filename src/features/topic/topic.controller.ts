@@ -7,7 +7,7 @@ import { createTopicSchema } from "./topic.schema";
 export const createTopic = async (
   req: AuthRequest,
   res: Response<APIResponse>,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     if (!req.user) {
@@ -29,7 +29,7 @@ export const createTopic = async (
     const topic = await createTopicService(
       name,
       description || null,
-      req.user.user_id
+      req.user.user_id,
     );
 
     return res.status(201).json({

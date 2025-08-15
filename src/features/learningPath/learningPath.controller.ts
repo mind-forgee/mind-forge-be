@@ -1,12 +1,21 @@
-import { Router, Response } from "express";
+import { Router, Response, NextFunction } from "express";
 import { AuthRequest } from "../../middleware/verifyToken";
-import { getAllTopicsService, saveUserLearningPathService } from "./learningPath.service";
+import {
+  getAllTopicsService,
+  saveUserLearningPathService,
+} from "./learningPath.service";
 import { APIResponse } from "../../models/response";
+import { saveLearningPathSchema } from "./learningPath.schema";
+import z from "zod";
 
 const router = Router();
 
 // GET /api/learning-path/topics - fetch all available topics
-export const getAllTopicsController = async (req: AuthRequest, res: Response) => {
+export const getAllTopicsController = async (
+  req: AuthRequest,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
   try {
     const topics = await getAllTopicsService();
     res.status(200).json({
@@ -15,17 +24,16 @@ export const getAllTopicsController = async (req: AuthRequest, res: Response) =>
       data: topics,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status: "error",
-      message: "Server error fetching topics",
-      errors: err,
-    });
+    next(err);
   }
 };
 
 // POST /api/learning-path - save user's chosen topic and level
-export const saveLearningPathController = async (req: AuthRequest, res: Response) => {
+export const saveLearningPathController = async (
+  req: AuthRequest,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
   try {
     if (!req.user) {
       return res.status(401).json({
@@ -34,7 +42,9 @@ export const saveLearningPathController = async (req: AuthRequest, res: Response
       });
     }
 
-    const { topicId, level } = req.body;
+    const { topicId, level } = req.body as z.infer<
+      typeof saveLearningPathSchema
+    >;
 
     if (!topicId || !level) {
       return res.status(400).json({
@@ -43,7 +53,7 @@ export const saveLearningPathController = async (req: AuthRequest, res: Response
       });
     }
 
-    const saved = await saveUserLearningPathService(req.user.user_id, topicId, level);
+    const saved = await saveUserLearningPathService(topicId, level);
 
     res.status(201).json({
       status: "success",
@@ -51,12 +61,7 @@ export const saveLearningPathController = async (req: AuthRequest, res: Response
       data: saved,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status: "error",
-      message: "Server error saving learning path",
-      errors: err,
-    });
+    next(err);
   }
 };
 

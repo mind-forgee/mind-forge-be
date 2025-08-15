@@ -1,29 +1,26 @@
+import z from "zod";
 import prisma from "../../database/database";
+import { saveLearningPathSchema } from "./learningPath.schema";
 
 export const getAllTopicsService = async () => {
   return await prisma.topic.findMany({
-    orderBy: { name: 'asc' },
+    orderBy: { name: "asc" },
   });
 };
 
 export const saveUserLearningPathService = async (
-  userId: string,
   topicId: string,
-  level: string
+  level: z.infer<typeof saveLearningPathSchema>["level"],
 ) => {
   return await prisma.learningPath.upsert({
     where: {
-      userId_topicId: {
-        userId,
-        topicId,
-      },
+      topicId: topicId,
     },
     update: {
       level,
       createdAt: new Date(),
     },
     create: {
-      userId,
       topicId,
       level,
     },
