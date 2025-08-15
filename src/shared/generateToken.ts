@@ -8,9 +8,8 @@ type UserPayload = {
 
 export const generateToken = (payload: UserPayload) => {
   const token = jwt.sign(payload, config.jwtSecret, {
-    expiresIn: "1d", 
+    expiresIn: "1d",
   });
 
   return token;
 };
-

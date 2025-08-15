@@ -2,10 +2,7 @@ import { z } from "zod";
 
 export const createTopicSchema = z
   .object({
-    name: z
-      .string()
-      .min(1, { message: "Topic name is required" })
-      .trim(),
+    name: z.string().min(1, { message: "Topic name is required" }).trim(),
     description: z
       .string()
       .optional()

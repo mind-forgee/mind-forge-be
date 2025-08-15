@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { getAllTopicsController, saveLearningPathController } from "./learningPath.controller";
+import {
+  getAllTopicsController,
+  saveLearningPathController,
+} from "./learningPath.controller";
 
 import { verifyToken } from "../../middleware/verifyToken";
 

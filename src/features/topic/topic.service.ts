@@ -4,7 +4,7 @@ import { APIError } from "../../middleware/erorrHandler";
 export const createTopicService = async (
   name: string,
   description: string | null,
-  createdBy: string
+  createdBy: string,
 ) => {
   const existing = await prisma.topic.findUnique({ where: { name } });
   if (existing) {
