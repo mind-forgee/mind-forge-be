@@ -11,6 +11,6 @@ export const saveLearningPathSchema = z.object({
       message: "level must be one of: beginner, intermediate, advanced",
     })
     .refine((val) => ["beginner", "intermediate", "advanced"].includes(val), {
-      message: "Invalid level provided",
+      message: "level must be one of: beginner, intermediate, advanced",
     }),
 });
