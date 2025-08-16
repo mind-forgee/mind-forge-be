@@ -32,13 +32,14 @@ model User {
 }
 
 model Course {
-    id          Int       @id @default(autoincrement())
-    user_id     String
+    id          Int      @id @default(autoincrement())
     course_name String
+    course_key  String // = course_name.trim().toLowerCase()
     description String
     difficulty  String
-    created_at  DateTime  @default(now())
-    chapter     Chapter[]
+    created_at  DateTime @default(now())
+
+    chapter Chapter[]
 }
 
 model Chapter {
@@ -50,7 +51,7 @@ model Chapter {
     content_json Json?
     created_at   DateTime @default(now())
     updated_at   DateTime @updatedAt
-    Course       Course?  @relation(fields: [course_id], references: [id])
+    course       Course   @relation(fields: [course_id], references: [id], onDelete: Cascade)
 
     @@unique([course_id, order_index])
     @@index([course_id, order_index])
