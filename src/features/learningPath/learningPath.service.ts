@@ -16,7 +16,7 @@ export const createLearningPathService = async (
   topic: string,
   difficulty: string,
 ) => {
-  const course_key = topic.toLowerCase();
+  const course_key = `${topic.toLowerCase()} ${difficulty.toLowerCase()}`;
 
   const existingCourse = await prisma.course.findFirst({
     where: {
@@ -29,6 +29,15 @@ export const createLearningPathService = async (
   if (existingCourse) {
     return existingCourse;
   }
+
+  const updateUser = await prisma.user.update({
+    where: {
+      id: user_id,
+    },
+    data: {
+      selected_course_key: course_key,
+    },
+  });
 
   try {
     const outline = await getContentOutline(topic, difficulty);

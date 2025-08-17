@@ -40,12 +40,19 @@ export const loginUser = async (
 ) => {
   const { email, password } = req.body as z.infer<typeof loginUserSchema>;
   try {
-    const result = await loginUserService(email, password, res);
+    const { full_name, role, selected_course_key } = await loginUserService(
+      email,
+      password,
+      res,
+    );
+
     return res.status(200).json({
       message: "Sign In Success",
       status: "success",
       data: {
-        token: result,
+        full_name,
+        role,
+        selected_course_key,
       },
     });
   } catch (err) {

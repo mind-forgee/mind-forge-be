@@ -48,9 +48,15 @@ export const loginUserService = async (
   }
 
   const token = generateToken({ user_id: user.id, role: user.role });
-
   setAuthCookie(token, res);
-  return token;
+
+  const { full_name, role, selected_course_key } = user;
+  console.log(full_name, role, selected_course_key);
+  return {
+    full_name,
+    role,
+    selected_course_key,
+  };
 };
 
 export const getUserService = async (user_id: string) => {
@@ -61,10 +67,28 @@ export const getUserService = async (user_id: string) => {
     select: {
       full_name: true,
       email: true,
+      role: true,
+      selected_course_key: true,
     },
   });
 
-  return existingUser;
+  const courseUser = await prisma.course.findFirst({
+    where: {
+      course_key: existingUser?.selected_course_key as string,
+    },
+  });
+
+  const chapterUser = await prisma.chapter.findMany({
+    where: {
+      course_id: courseUser?.id,
+    },
+  });
+
+  return {
+    existingUser,
+    courseUser,
+    chapterUser,
+  };
 };
 
 export const logoutUserService = async (res: Response) => {
