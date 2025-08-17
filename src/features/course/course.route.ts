@@ -1,10 +1,18 @@
-import express from "express";
+import { Router } from "express";
 
-import { verifyToken } from "../../middleware/verifyToken";
+// import { verifyToken } from "../../middleware/verifyToken";
 import { createCourse } from "./course.controller";
+import { verifyToken } from "../../middleware/verifyToken";
+import { validate } from "../../http/validate";
+import { createCourseSchema } from "./course.schema";
 
-const router = express.Router();
+const courseRoutes = Router();
 
-router.post("/", createCourse);
+courseRoutes.post(
+  "/",
+  verifyToken,
+  validate(createCourseSchema, "body"),
+  createCourse,
+);
 
-export default router;
+export default courseRoutes;
