@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import courseRoutes from "./features/course/course.route";
 import topicRoutes from "./features/topic/topic.routes";
+import "./shared/chapterQueue";
 
 const app = express();
 app.use(cookieParser());

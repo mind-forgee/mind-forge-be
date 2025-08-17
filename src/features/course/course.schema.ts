@@ -7,7 +7,7 @@ export const createCourseSchema = z.object({
     [
       CourseDifficulty.beginner,
       CourseDifficulty.intermediate,
-      CourseDifficulty.beginner,
+      CourseDifficulty.advanced,
     ],
     {
       message:

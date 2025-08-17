@@ -2,6 +2,7 @@ import { CourseDifficulty } from "@prisma/client";
 import prisma from "../../database/database";
 import { outlinePrompt } from "../../shared/getPrompt";
 import { textGeminiModel } from "../../shared/geminiAI";
+import { generateChapterContent } from "../../shared/chapterQueue";
 
 type GeneratedChapterStructured = {
   title: string;
@@ -43,6 +44,12 @@ export const createCourseService = async (
   });
 
   if (existingCourse) {
+    for (const chapter of existingCourse.chapters) {
+      await generateChapterContent({
+        chapterId: chapter.id,
+      });
+    }
+
     return existingCourse;
   }
 
@@ -101,6 +108,12 @@ export const createCourseService = async (
       },
     },
   });
+
+  for (const chapter of course.chapters) {
+    await generateChapterContent({
+      chapterId: chapter.id,
+    });
+  }
 
   return course;
 };
