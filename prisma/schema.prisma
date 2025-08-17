@@ -78,7 +78,7 @@ model Course {
 }
 
 model Chapter {
-    id          String @id @default(uuid())
+    id          String @id @default(cuid())
     course_id   String
     order_index Int
 
@@ -108,6 +108,9 @@ model SelectedCourse {
 
     user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
     course Course @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@id([user_id, course_id])
+    @@unique([user_id, course_id])
 }
 
 model CourseProgress {
@@ -123,4 +126,5 @@ model CourseProgress {
     chapter Chapter @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@id([user_id, chapter_id])
+    @@unique([user_id, chapter_id])
 }
