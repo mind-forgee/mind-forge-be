@@ -85,11 +85,12 @@ model Chapter {
     content_json Json?   @db.Json
     video_url    String? @db.Text
 
+    is_active Boolean @default(false)
+
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
-
+    course   Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
     progress CourseProgress[]
 
     @@unique([course_id, order_index])
