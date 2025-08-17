@@ -73,6 +73,8 @@ model Course {
     generated_by_user User             @relation(fields: [generated_by], references: [id], onDelete: Cascade, onUpdate: Cascade)
     chapters          Chapter[]
     SelectedCourse    SelectedCourse[]
+
+    @@unique([topic_id, difficulty])
 }
 
 model Chapter {
