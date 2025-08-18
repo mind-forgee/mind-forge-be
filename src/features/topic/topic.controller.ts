@@ -1,36 +1,35 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AuthRequest } from "../../middleware/verifyToken";
-import { createTopicService } from "./topic.service";
+import { createTopicService, getAllTopicsService } from "./topic.service";
 import { APIResponse } from "../../models/response";
 import { createTopicSchema } from "./topic.schema";
+
+export const getAllTopics = async (
+  req: Request,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
+  try {
+    const topics = await getAllTopicsService();
+    res.status(200).json({
+      status: "success",
+      message: "Topics fetched successfully",
+      data: topics,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const createTopic = async (
   req: AuthRequest,
   res: Response<APIResponse>,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({
-        status: "error",
-        message: "Unauthorized",
-      });
-    }
-
-    if (req.user.role !== "admin") {
-      return res.status(403).json({
-        status: "error",
-        message: "Forbidden: Admins only",
-      });
-    }
-
     const { name, description } = createTopicSchema.parse(req.body);
 
-    const topic = await createTopicService(
-      name,
-      description || null,
-      req.user.user_id
-    );
+    const topic = await createTopicService(name, description);
 
     return res.status(201).json({
       status: "success",

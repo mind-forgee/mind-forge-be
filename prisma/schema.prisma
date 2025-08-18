@@ -18,65 +18,113 @@ generator client {
     provider = "prisma-client-js"
 }
 
+enum UserRole {
+    user
+    admin
+}
+
 model User {
-    id                  String   @id @default(uuid())
-    full_name           String
-    email               String   @unique
-    password            String
-    role                String   @default("user")
-    created_at          DateTime @default(now())
-    selected_course_key String?
-    // Optional relation to User model:
-    // topics Topic[]
-    // LearningPath LearningPath?
+    id        String   @id @default(uuid())
+    full_name String
+    email     String   @unique
+    password  String
+    role      UserRole @default(user)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    generated_course Course?
+    selected_course  SelectedCourse?
+    chapter_progress CourseProgress[]
+}
+
+model Topic {
+    id          String @id @default(cuid())
+    name        String @unique
+    description String @db.Text
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    courses Course[]
+}
+
+enum CourseDifficulty {
+    Beginner
+    Intermediate
+    Advanced
 }
 
 model Course {
-    id          Int      @id @default(autoincrement())
-    course_name String
-    course_key  String // = course_name.trim().toLowerCase()
-    description String
-    difficulty  String
-    created_at  DateTime @default(now())
+    id String @id @default(cuid())
 
-    chapter Chapter[]
+    title       String
+    description String @db.Text
+
+    topic_id   String
+    difficulty CourseDifficulty
+    topic      Topic            @relation(fields: [topic_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    generated_by String @unique
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    generated_by_user User             @relation(fields: [generated_by], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    chapters          Chapter[]
+    SelectedCourse    SelectedCourse[]
+
+    @@unique([topic_id, difficulty])
 }
 
 model Chapter {
-    id           String   @id @default(uuid())
-    course_id    Int
-    order_index  Int
-    chapter_name String
-    description  String
-    content_json Json?
-    created_at   DateTime @default(now())
-    updated_at   DateTime @updatedAt
-    course       Course   @relation(fields: [course_id], references: [id], onDelete: Cascade)
+    id          String @id @default(cuid())
+    course_id   String
+    order_index Int
+
+    title        String
+    description  String  @db.Text
+    content_json Json?   @db.Json
+    video_url    String? @db.Text
+
+    is_active Boolean @default(false)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    course   Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
+    progress CourseProgress[]
 
     @@unique([course_id, order_index])
     @@index([course_id, order_index])
 }
 
-// model LearningPath {
-//     id        String   @id @default(uuid())
-//     userId    String
-//     topicId   String
-//     level     String
-//     createdAt DateTime @default(now())
+model SelectedCourse {
+    user_id   String @unique
+    course_id String @unique
 
-//     user User @relation(fields: [userId], references: [id])
-//     //   topic Topic @relation(fields: [topicId], references: [id])
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 
-//     @@unique([userId]) // one topic per user
-// }
+    user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    course Course @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-// model Topic {
-//     id          String   @id @default(uuid())
-//     name        String   @unique
-//     description String?
-//     createdBy   String
-//     createdAt   DateTime @default(now())
+    @@id([user_id, course_id])
+    @@unique([user_id, course_id])
+}
 
-//     // Optional relation to User model:
-//     creator    User     @relation(fields: [createdBy], references: [id])
-// }
+model CourseProgress {
+    user_id    String
+    chapter_id String
+
+    is_done Boolean @default(false)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    chapter Chapter @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@id([user_id, chapter_id])
+    @@unique([user_id, chapter_id])
+}

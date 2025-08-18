@@ -1,11 +1,13 @@
 import prisma from "../../database/database";
 import { APIError } from "../../middleware/erorrHandler";
 
-export const createTopicService = async (
-  name: string,
-  description: string | null,
-  createdBy: string
-) => {
+export const getAllTopicsService = async () => {
+  return await prisma.topic.findMany({
+    orderBy: { name: "asc" },
+  });
+};
+
+export const createTopicService = async (name: string, description: string) => {
   const existing = await prisma.topic.findUnique({ where: { name } });
   if (existing) {
     throw new APIError("Topic already exists", 400);
@@ -15,7 +17,6 @@ export const createTopicService = async (
     data: {
       name,
       description,
-      createdBy,
     },
   });
 };

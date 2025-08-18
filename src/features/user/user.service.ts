@@ -50,12 +50,9 @@ export const loginUserService = async (
   const token = generateToken({ user_id: user.id, role: user.role });
   setAuthCookie(token, res);
 
-  const { full_name, role, selected_course_key } = user;
-  console.log(full_name, role, selected_course_key);
+  const { full_name } = user;
   return {
     full_name,
-    role,
-    selected_course_key,
   };
 };
 
@@ -65,29 +62,26 @@ export const getUserService = async (user_id: string) => {
       id: user_id,
     },
     select: {
+      id: true,
       full_name: true,
       email: true,
       role: true,
-      selected_course_key: true,
+      selected_course: {
+        select: {
+          course_id: true,
+        },
+      },
+      created_at: true,
+      updated_at: true,
     },
   });
 
-  const courseUser = await prisma.course.findFirst({
-    where: {
-      course_key: user?.selected_course_key as string,
-    },
-  });
-
-  const chapterUser = await prisma.chapter.findMany({
-    where: {
-      course_id: courseUser?.id,
-    },
-  });
+  if (!user) {
+    throw new APIError("User not found", 404);
+  }
 
   return {
     user,
-    courseUser,
-    chapterUser,
   };
 };
 

@@ -3,11 +3,11 @@ export const outlinePrompt = (topic: string, difficulty: string) => {
 Return ONLY valid JSON:
 
 {
-  "course_name": "${topic}",
+  "title": "${topic}",
   "difficulty": "${difficulty}",
-  "desc": "<4-6 sentences course overview>",
+  "description": "<4-6 sentences course overview>",
   "chapters": [
-    { "chapter_name": "<Title>", "desc": "<6-8 sentence article>" }
+    { "title": "<Title>", "description": "<6-8 sentence article>" }
   ]
 }
 
@@ -29,17 +29,17 @@ export const chapterPrompt = (
         
         {
             "content": [
-                "<Topic Name>: <4–6 sentences (what, why, tools/libs, steps/concepts, real example)>",
+                "<markdown sentences (what, why, tools/libs, steps/concepts, real example)>",
                 "...at least 5–7 items..."
-                ]
-                }
+            ]
+        }
                 
-                Course overview: ${courseDesc}
+Course overview: ${courseDesc}
 Chapter: ${chapterName}
 Chapter summary: ${chapterDesc}
 
 Rules:
 - JSON only.
-- Each content item is paragraph (no bullets), meaningful, specific.
+- Each content item is in markdown format. it can be paragraph, bullets, code, etc. it should be meaningful, specific.
 `;
 };

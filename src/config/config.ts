@@ -13,6 +13,10 @@ interface Config {
   databaseUrl: string;
   jwtSecret: string;
   geminiApiKey: string;
+  redisPort: number;
+  redisHost: string;
+  redisPassword: string;
+  redisDb: number;
 }
 
 const config: Config = {
@@ -21,6 +25,10 @@ const config: Config = {
   databaseUrl: process.env.DATABASE_URL || "",
   jwtSecret: process.env.JWT_SECRET || "",
   geminiApiKey: process.env.GEMINI_API_KEY || "",
+  redisPort: Number(process.env.REDIS_PORT) || 6379,
+  redisHost: process.env.REDIS_HOST || "localhost",
+  redisPassword: process.env.REDIS_PASSWORD || "",
+  redisDb: Number(process.env.REDIS_DB) || 0,
 };
 
 export default config;
