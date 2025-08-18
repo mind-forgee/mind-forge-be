@@ -94,10 +94,14 @@ export const createLearningPathService = async (
   }
 };
 
-export const getChapterByCourseIdService = async (courseId: string) => {
+export const getChapterByCourseIdService = async (
+  courseId: string,
+  order_index: string,
+) => {
   const chapter = await prisma.chapter.findMany({
     where: {
       course_id: Number(courseId),
+      order_index: Number(order_index),
     },
   });
   return chapter;

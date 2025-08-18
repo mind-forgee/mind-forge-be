@@ -60,7 +60,7 @@ export const loginUserService = async (
 };
 
 export const getUserService = async (user_id: string) => {
-  const existingUser = await prisma.user.findFirst({
+  const user = await prisma.user.findFirst({
     where: {
       id: user_id,
     },
@@ -74,7 +74,7 @@ export const getUserService = async (user_id: string) => {
 
   const courseUser = await prisma.course.findFirst({
     where: {
-      course_key: existingUser?.selected_course_key as string,
+      course_key: user?.selected_course_key as string,
     },
   });
 
@@ -85,7 +85,7 @@ export const getUserService = async (user_id: string) => {
   });
 
   return {
-    existingUser,
+    user,
     courseUser,
     chapterUser,
   };

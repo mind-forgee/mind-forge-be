@@ -10,7 +10,11 @@ import { verifyToken } from "../../middleware/verifyToken";
 const router = Router();
 
 router.get("/topics", verifyToken, getAllTopicsController);
-router.get("/courses/:courseId/chapter", verifyToken, getChapterByCourseId);
+router.get(
+  "/courses/:courseId/:order_index",
+  verifyToken,
+  getChapterByCourseId,
+);
 router.post("/", verifyToken, createLearningPath);
 
 export default router;

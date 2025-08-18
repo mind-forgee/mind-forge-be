@@ -59,6 +59,7 @@ export const createLearningPath = async (
 
 type ChapterParams = {
   courseId: string;
+  order_index: string;
 };
 
 export const getChapterByCourseId = async (
@@ -67,8 +68,8 @@ export const getChapterByCourseId = async (
   next: NextFunction,
 ) => {
   try {
-    const { courseId } = req.params;
-    const result = await getChapterByCourseIdService(courseId);
+    const { courseId, order_index } = req.params;
+    const result = await getChapterByCourseIdService(courseId, order_index);
 
     return res.status(200).json({
       status: "success",
