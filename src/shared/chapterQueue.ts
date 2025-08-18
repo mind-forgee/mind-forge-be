@@ -8,14 +8,13 @@ type GeneratedChapterContentRequest = {
   chapterId: string;
 };
 
-type GeneratedChapterContentResponse = {
-  content: string[];
-};
-
 const chapterQueue = new Bull("chapter", {
   redis: {
     port: config.redisPort,
     host: config.redisHost,
+    password: config.redisPassword,
+    username: config.redisUsername,
+    db: config.redisDb,
   },
   defaultJobOptions: {
     attempts: 3,
@@ -49,7 +48,12 @@ const processChapterQueue = async (
   });
 
   if (!chapter) {
-    throw new Error("Chapter not found");
+    return Promise.reject(new Error(`Chapter with ID ${chapterId} not found`));
+  }
+
+  if (chapter.content) {
+    console.log(`Chapter with ID ${chapterId} already has content, skipping.`);
+    return Promise.resolve();
   }
 
   const prompt = chapterPrompt(
@@ -57,31 +61,38 @@ const processChapterQueue = async (
     chapter.course.description,
     chapter.title,
     chapter.description,
+    chapter.order_index,
+    chapter.is_study_case,
   );
 
   const responseModel = await textGeminiModel.generateContent({
     contents: [{ role: "user", parts: [{ text: prompt }] }],
     generationConfig: {
-      responseMimeType: "application/json",
+      responseMimeType: "text/plain",
     },
   });
 
-  const generatedCourse: GeneratedChapterContentResponse = JSON.parse(
-    responseModel.response.text(),
-  );
-
-  await prisma.chapter.update({
-    where: { id: chapterId },
-    data: { content_json: generatedCourse.content },
-  });
+  try {
+    await prisma.chapter.update({
+      where: { id: chapterId, content: null },
+      data: {
+        content: responseModel.response.text(),
+        is_active: true,
+      },
+    });
+  } catch (error: any) {
+    return Promise.reject(
+      new Error(error || "Failed to parse generated content"),
+    );
+  }
 
   return Promise.resolve();
 };
 
 chapterQueue.process(10, processChapterQueue);
 
-chapterQueue.on("completed", (job: any) => {
-  console.log(`Job ID ${job.id} completed with result`);
+chapterQueue.on("completed", (job) => {
+  console.log(`Job ID ${job.id} completed`);
 });
 
 chapterQueue.on("failed", (job: any, err: any) => {

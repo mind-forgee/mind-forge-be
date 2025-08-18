@@ -8,6 +8,7 @@ services:
       - ${PORT}:${PORT}
     environment:
       - NODE_ENV=production
+      - REDIS_HOST=redis
   redis:
     container_name: mind-forge-redis
     image: redis:7.4-alpine

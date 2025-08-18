@@ -7,6 +7,7 @@ import { generateChapterContent } from "../../shared/chapterQueue";
 type GeneratedChapterStructured = {
   title: string;
   description: string;
+  is_study_case: boolean;
 };
 
 type GeneratedCourseStructured = {
@@ -27,6 +28,7 @@ export const createCourseService = async (
         topic_id: topicId,
         difficulty: difficulty,
       },
+      
     },
     include: {
       topic: true,
@@ -37,6 +39,7 @@ export const createCourseService = async (
           description: true,
           order_index: true,
           is_active: true,
+          is_study_case: true,
         },
         orderBy: { order_index: "asc" },
       },
@@ -44,12 +47,6 @@ export const createCourseService = async (
   });
 
   if (existingCourse) {
-    for (const chapter of existingCourse.chapters) {
-      await generateChapterContent({
-        chapterId: chapter.id,
-      });
-    }
-
     return existingCourse;
   }
 
@@ -79,6 +76,7 @@ export const createCourseService = async (
     title: chapter.title,
     description: chapter.description,
     is_active: false,
+    is_study_case: chapter.is_study_case ?? false,
   }));
 
   const course = await prisma.course.create({
@@ -103,6 +101,7 @@ export const createCourseService = async (
           description: true,
           order_index: true,
           is_active: true,
+          is_study_case: true,
         },
         orderBy: { order_index: "asc" },
       },
@@ -110,6 +109,7 @@ export const createCourseService = async (
   });
 
   for (const chapter of course.chapters) {
+    // Adding to queue for chapter content generation worker
     await generateChapterContent({
       chapterId: chapter.id,
     });
