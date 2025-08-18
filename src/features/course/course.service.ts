@@ -3,6 +3,7 @@ import prisma from "../../database/database";
 import { outlinePrompt } from "../../shared/getPrompt";
 import { textGeminiModel } from "../../shared/geminiAI";
 import { generateChapterContent } from "../../shared/chapterQueue";
+import { APIError } from "../../middleware/erorrHandler";
 
 type GeneratedChapterStructured = {
   title: string;
@@ -46,6 +47,20 @@ export const createCourseService = async (
   });
 
   if (existingCourse) {
+    await prisma.selectedCourse.upsert({
+      where: {
+        user_id: userId,
+      },
+      create: {
+        user_id: userId,
+        course_id: existingCourse.id,
+      },
+      update: {
+        user_id: userId,
+        course_id: existingCourse.id,
+      },
+    });
+
     return existingCourse;
   }
 
@@ -54,7 +69,7 @@ export const createCourseService = async (
   });
 
   if (!topic) {
-    throw new Error("Topic not found");
+    throw new APIError("Topic not found", 404);
   }
 
   const prompt = outlinePrompt(topic.name, difficulty);
@@ -104,6 +119,20 @@ export const createCourseService = async (
         },
         orderBy: { order_index: "asc" },
       },
+    },
+  });
+
+  await prisma.selectedCourse.upsert({
+    where: {
+      user_id: userId,
+    },
+    create: {
+      user_id: userId,
+      course_id: course.id,
+    },
+    update: {
+      user_id: userId,
+      course_id: course.id,
     },
   });
 
