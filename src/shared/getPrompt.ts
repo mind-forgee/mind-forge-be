@@ -7,9 +7,16 @@ Return ONLY valid JSON:
   "difficulty": "${difficulty}",
   "description": "<4-6 sentences course overview>",
   "chapters": [
-    { "title": "<Title>", "description": "<6-8 sentence article>" }
+    { "title": "<Title>", "description": "<6-8 sentence article>", "is_study_case": <boolean> },
   ]
 }
+
+Chapter requirements:
+- 5–8 chapters.
+- Each chapter must have a title and description.
+- Description should be 6-8 sentences long.
+- Include a boolean field "is_study_case" to indicate if the chapter is a study case.
+- Study case chapter is only one and should be the last chapter.
 
 Rules:
 - JSON only (no markdown).
@@ -24,6 +31,7 @@ export const chapterPrompt = (
   chapterName: string,
   chapterDesc: string,
   chapterOrderIndex: number,
+  isStudyCase: boolean,
 ) => {
   return `
     Expand ONE chapter for the course named "${courseName}".
@@ -36,12 +44,30 @@ export const chapterPrompt = (
     - Do NOT return JSON, HTML tags, or extra explanations.
     - The response must be pure Markdown.
 
-    Content requirements:
+    Context:
+    - Is Chapter a study case: ${isStudyCase}
+    - Course overview: ${courseDesc}  
+    - Chapter order index: ${chapterOrderIndex}  
+    - Chapter: ${chapterName}  
+    - Chapter summary: ${chapterDesc}
+
+    Content requirements (for non-study case chapters):
     1. What (introduction to the topic)  
     2. Why (importance and relevance)  
     3. Tools/Libraries (if applicable)  
     4. Steps/Concepts (ordered explanation)  
     5. Real Example (code or case study)  
+    6. Summary (key takeaways)
+
+    Content requirements (for study case chapters):
+    1. What (introduction to the study case)  
+    2. Why (importance and relevance of the study case)  
+    3. Tools/Libraries (if applicable)  
+    4. Steps/Concepts (ordered explanation)
+
+    Notes:
+     - For study case chapter, the user can submit a result link of the study case (e.g github links, deployment link, gdrive link (txt file, gdocs file, etc.), etc.). 
+       So make it the study case implementable so that user can submit a link. 
 
     Special formatting rules:
     - Inline code snippets inside a sentence → \`inline code\`
@@ -49,11 +75,5 @@ export const chapterPrompt = (
       \`\`\`language
       ...code here...
       \`\`\`
-
-    Context:
-    - Course overview: ${courseDesc}  
-    - Chapter order index: ${chapterOrderIndex}  
-    - Chapter: ${chapterName}  
-    - Chapter summary: ${chapterDesc}
 `;
 };

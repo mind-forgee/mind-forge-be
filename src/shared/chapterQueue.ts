@@ -59,6 +59,7 @@ const processChapterQueue = async (
     chapter.title,
     chapter.description,
     chapter.order_index,
+    chapter.is_study_case,
   );
 
   const responseModel = await textGeminiModel.generateContent({
