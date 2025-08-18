@@ -1,6 +1,5 @@
 import { Router } from "express";
 
-// import { verifyToken } from "../../middleware/verifyToken";
 import { createCourse } from "./course.controller";
 import { verifyToken } from "../../middleware/verifyToken";
 import { validate } from "../../http/validate";
