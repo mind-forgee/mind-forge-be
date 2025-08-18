@@ -160,5 +160,9 @@ export const getUserCourseService = async (user_id: string) => {
     },
   });
 
+  if (!courseUser) {
+    throw new APIError("Course User Not Found!", 404);
+  }
+
   return courseUser;
 };
