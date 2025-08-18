@@ -8,10 +8,15 @@ import topicRoutes from "./features/topic/topic.routes";
 import "./shared/chapterQueue";
 
 const app = express();
+
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: "*",
+  }),
+);
 app.use(express.json());
-app.use(cors());
 
 app.use("/api/auth", userRoutes);
 app.use("/api/courses", courseRoutes);
