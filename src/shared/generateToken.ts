@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 import config from "../config/config";
 
-type UserId = {
+type UserPayload = {
   user_id: string;
+  role: string;
 };
 
-export const generateToken = (user_id: UserId) => {
-  const token = jwt.sign(user_id, config.jwtSecret, {
+export const generateToken = (payload: UserPayload) => {
+  const token = jwt.sign(payload, config.jwtSecret, {
     expiresIn: "1d",
   });
 

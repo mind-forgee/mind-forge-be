@@ -47,9 +47,13 @@ export const loginUserService = async (
     throw new APIError("Invalid Credentials!");
   }
 
-  const token = generateToken({ user_id: user.id });
+  const token = generateToken({ user_id: user.id, role: user.role });
   setAuthCookie(token, res);
-  return token;
+
+  const { full_name } = user;
+  return {
+    full_name,
+  };
 };
 
 export const getUserService = async (user_id: string) => {
@@ -58,12 +62,27 @@ export const getUserService = async (user_id: string) => {
       id: user_id,
     },
     select: {
+      id: true,
       full_name: true,
       email: true,
+      role: true,
+      selected_course: {
+        select: {
+          course_id: true,
+        },
+      },
+      created_at: true,
+      updated_at: true,
     },
   });
 
-  return existingUser;
+  if (!existingUser) {
+    throw new APIError("User not found", 404);
+  }
+
+  return {
+    existingUser,
+  };
 };
 
 export const logoutUserService = async (res: Response) => {
