@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { APIResponse } from "../../models/response";
 import z from "zod";
-import { createCourseService } from "./course.service";
+import { createCourseService, getUserCourseService } from "./course.service";
 import { createCourseSchema } from "./course.schema";
 import { AuthRequest } from "../../middleware/verifyToken";
 
@@ -28,6 +28,26 @@ export const createCourse = async (
     });
   } catch (err) {
     console.log("Error Creating Course");
+    next(err);
+  }
+};
+
+export const getUserCourse = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.user?.user_id as string;
+
+  try {
+    const course = await getUserCourseService(userId);
+    return res.status(200).json({
+      status: "success",
+      message: "Success get course!",
+      data: course,
+    });
+  } catch (err) {
+    console.log("Error get selected course");
     next(err);
   }
 };

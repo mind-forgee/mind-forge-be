@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { createCourse } from "./course.controller";
+import { createCourse, getUserCourse } from "./course.controller";
 import { verifyToken } from "../../middleware/verifyToken";
 import { validate } from "../../http/validate";
 import { createCourseSchema } from "./course.schema";
@@ -13,5 +13,7 @@ courseRoutes.post(
   validate(createCourseSchema, "body"),
   createCourse,
 );
+
+courseRoutes.get("/", verifyToken, getUserCourse);
 
 export default courseRoutes;

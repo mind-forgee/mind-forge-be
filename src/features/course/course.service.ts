@@ -29,7 +29,6 @@ export const createCourseService = async (
         topic_id: topicId,
         difficulty: difficulty,
       },
-      
     },
     include: {
       topic: true,
@@ -145,4 +144,21 @@ export const createCourseService = async (
   }
 
   return course;
+};
+
+export const getUserCourseService = async (user_id: string) => {
+  const courseUser = await prisma.selectedCourse.findUnique({
+    where: {
+      user_id,
+    },
+    include: {
+      course: {
+        include: {
+          chapters: true,
+        },
+      },
+    },
+  });
+
+  return courseUser;
 };
