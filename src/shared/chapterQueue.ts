@@ -12,6 +12,9 @@ const chapterQueue = new Bull("chapter", {
   redis: {
     port: config.redisPort,
     host: config.redisHost,
+    password: config.redisPassword,
+    username: config.redisUsername,
+    db: config.redisDb,
   },
   defaultJobOptions: {
     attempts: 3,
