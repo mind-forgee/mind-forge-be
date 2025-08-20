@@ -64,12 +64,17 @@ export const selectCompleteChapter = async (
   try {
     const user_id = req?.user?.user_id;
     const { chapter_id } = req.params;
-    console.log(user_id, chapter_id)
-    const result = await selectCompleteChapterService(
+
+    const completedChapter = await selectCompleteChapterService(
       user_id as string,
       chapter_id,
     );
-    return result;
+
+    return res.status(200).json({
+      message: "Chapter completed successfully",
+      status: "success",
+      data: completedChapter,
+    });
   } catch (err) {
     console.log("Error select complete chapter");
     next(err);

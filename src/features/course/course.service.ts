@@ -196,7 +196,18 @@ export const getUserCourseService = async (user_id: string) => {
     include: {
       course: {
         include: {
-          chapters: true,
+          chapters: {
+            include: {
+              progress: {
+                where: {
+                  user_id,
+                },
+                select: {
+                  is_done: true,
+                },
+              },
+            },
+          },
         },
       },
     },
