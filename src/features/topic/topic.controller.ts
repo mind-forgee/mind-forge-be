@@ -3,6 +3,7 @@ import { AuthRequest } from "../../middleware/verifyToken";
 import {
   createTopicService,
   deleteTopicService,
+  getAdminInfoService,
   getAllTopicsService,
 } from "./topic.service";
 import { APIResponse } from "../../models/response";
@@ -57,6 +58,23 @@ export const deleteTopic = async (
       status: "success",
       message: "Topic deleted successfully",
       data: deletedTopic,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getAdminInfo = async (
+  req: AuthRequest,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
+  try {
+    const result = await getAdminInfoService();
+    return res.status(200).json({
+      message: "Admin info success",
+      status: "success",
+      data: result,
     });
   } catch (err) {
     next(err);

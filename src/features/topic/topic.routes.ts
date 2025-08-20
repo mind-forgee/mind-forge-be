@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { createTopic, deleteTopic, getAllTopics } from "./topic.controller";
+import {
+  createTopic,
+  deleteTopic,
+  getAdminInfo,
+  getAllTopics,
+} from "./topic.controller";
 import { validate } from "../../http/validate";
 import { createTopicSchema, deleteTopicSchema } from "./topic.schema";
 import { verifyToken } from "../../middleware/verifyToken";
@@ -24,5 +29,7 @@ topicRoutes.delete(
   validate(deleteTopicSchema, "params"),
   deleteTopic,
 );
+
+topicRoutes.get("/admin", verifyToken, isAdmin, getAdminInfo);
 
 export default topicRoutes;
