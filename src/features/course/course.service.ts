@@ -61,6 +61,27 @@ export const createCourseService = async (
       },
     });
 
+    for (const chapter of existingCourse.chapters) {
+      await prisma.chapterProgress.upsert({
+        where: {
+          user_id_chapter_id: {
+            user_id: userId,
+            chapter_id: chapter.id,
+          },
+        },
+        create: {
+          user_id: userId,
+          chapter_id: chapter.id,
+          is_done: false,
+        },
+        update: {
+          user_id: userId,
+          chapter_id: chapter.id,
+          is_done: false,
+        },
+      });
+    }
+
     return existingCourse;
   }
 
@@ -143,6 +164,27 @@ export const createCourseService = async (
     });
   }
 
+  for (const chapter of course.chapters) {
+    await prisma.chapterProgress.upsert({
+      where: {
+        user_id_chapter_id: {
+          user_id: userId,
+          chapter_id: chapter.id,
+        },
+      },
+      create: {
+        user_id: userId,
+        chapter_id: chapter.id,
+        is_done: false,
+      },
+      update: {
+        user_id: userId,
+        chapter_id: chapter.id,
+        is_done: false,
+      },
+    });
+  }
+
   return course;
 };
 
@@ -165,4 +207,18 @@ export const getUserCourseService = async (user_id: string) => {
   }
 
   return courseUser;
+};
+
+export const selectCompleteChapterService = async (
+  user_id: string,
+  chapter_id: string,
+) => {
+  const completedChapter = await prisma.chapterProgress.update({
+    where: {
+      user_id_chapter_id: { user_id, chapter_id },
+    },
+    data: { is_done: true },
+  });
+
+  return completedChapter;
 };

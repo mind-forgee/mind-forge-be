@@ -1,7 +1,11 @@
 import { NextFunction, Response } from "express";
 import { APIResponse } from "../../models/response";
 import z from "zod";
-import { createCourseService, getUserCourseService } from "./course.service";
+import {
+  createCourseService,
+  getUserCourseService,
+  selectCompleteChapterService,
+} from "./course.service";
 import { createCourseSchema } from "./course.schema";
 import { AuthRequest } from "../../middleware/verifyToken";
 
@@ -48,6 +52,26 @@ export const getUserCourse = async (
     });
   } catch (err) {
     console.log("Error get selected course");
+    next(err);
+  }
+};
+
+export const selectCompleteChapter = async (
+  req: AuthRequest,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
+  try {
+    const user_id = req?.user?.user_id;
+    const { chapter_id } = req.params;
+    console.log(user_id, chapter_id)
+    const result = await selectCompleteChapterService(
+      user_id as string,
+      chapter_id,
+    );
+    return result;
+  } catch (err) {
+    console.log("Error select complete chapter");
     next(err);
   }
 };

@@ -1,6 +1,10 @@
 import { Router } from "express";
 
-import { createCourse, getUserCourse } from "./course.controller";
+import {
+  createCourse,
+  getUserCourse,
+  selectCompleteChapter,
+} from "./course.controller";
 import { verifyToken } from "../../middleware/verifyToken";
 import { validate } from "../../http/validate";
 import { createCourseSchema } from "./course.schema";
@@ -15,5 +19,6 @@ courseRoutes.post(
 );
 
 courseRoutes.get("/", verifyToken, getUserCourse);
+courseRoutes.patch("/:chapter_id", verifyToken, selectCompleteChapter);
 
 export default courseRoutes;
