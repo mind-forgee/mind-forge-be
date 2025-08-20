@@ -15,3 +15,9 @@ export const createCourseSchema = z.object({
     },
   ),
 });
+
+export const deleteCourseSchema = z.object({
+  course_id: z
+    .string({ message: "Course Id Is required" })
+    .min(4, { message: "Course id minimal 4 letters" }),
+});

@@ -233,3 +233,15 @@ export const selectCompleteChapterService = async (
 
   return completedChapter;
 };
+
+export const getAllCourseService = async () => {
+  return await prisma.course.findMany();
+};
+
+export const deleteSelectedCourseService = async (course_id: string) => {
+  return await prisma.course.delete({
+    where: {
+      id: course_id,
+    },
+  });
+};

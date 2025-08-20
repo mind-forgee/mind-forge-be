@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { createTopic, getAllTopics } from "./topic.controller";
+import { createTopic, deleteTopic, getAllTopics } from "./topic.controller";
 import { validate } from "../../http/validate";
-import { createTopicSchema } from "./topic.schema";
+import { createTopicSchema, deleteTopicSchema } from "./topic.schema";
 import { verifyToken } from "../../middleware/verifyToken";
 import { isAdmin } from "../../middleware/isAdmin";
 
@@ -15,6 +15,14 @@ topicRoutes.post(
   isAdmin,
   validate(createTopicSchema, "body"),
   createTopic,
+);
+
+topicRoutes.delete(
+  "/:topic_id",
+  verifyToken,
+  isAdmin,
+  validate(deleteTopicSchema, "params"),
+  deleteTopic,
 );
 
 export default topicRoutes;

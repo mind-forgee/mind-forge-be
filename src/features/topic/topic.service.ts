@@ -20,3 +20,11 @@ export const createTopicService = async (name: string, description: string) => {
     },
   });
 };
+
+export const deleteTopicService = async (topic_id: string) => {
+  return await prisma.topic.delete({
+    where: {
+      id: topic_id,
+    },
+  });
+};
