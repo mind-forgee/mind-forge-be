@@ -18,6 +18,8 @@ interface Config {
   redisUsername: string;
   redisPassword: string;
   redisDb: number;
+  youtubeApiBaseUrl: string;
+  youtubeApiKey: string;
 }
 
 const config: Config = {
@@ -31,6 +33,8 @@ const config: Config = {
   redisUsername: process.env.REDIS_USERNAME || "default",
   redisPassword: process.env.REDIS_PASSWORD || "",
   redisDb: Number(process.env.REDIS_DB) || 0,
+  youtubeApiBaseUrl: process.env.YOUTUBE_API_BASE_URL || "",
+  youtubeApiKey: process.env.YOUTUBE_API_KEY || "",
 };
 
 export default config;
