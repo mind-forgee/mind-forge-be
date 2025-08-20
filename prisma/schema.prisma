@@ -82,10 +82,11 @@ model Chapter {
     course_id   String
     order_index Int
 
-    title       String
-    description String  @db.Text
-    content     String? @db.Text
-    video_url   String? @db.Text
+    title           String
+    description     String  @db.Text
+    content         String? @db.Text
+    video_url       String? @db.Text
+    video_url_embed String? @db.Text
 
     is_active     Boolean @default(false)
     is_study_case Boolean @default(false)
