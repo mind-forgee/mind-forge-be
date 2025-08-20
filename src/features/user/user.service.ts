@@ -37,7 +37,6 @@ export const loginUserService = async (
   res: Response,
 ) => {
   const user = await checkUser(email);
-
   if (!user) {
     throw new APIError("Invalid Credentials!", 400);
   }
@@ -50,9 +49,10 @@ export const loginUserService = async (
   const token = generateToken({ user_id: user.id, role: user.role });
   setAuthCookie(token, res);
 
-  const { full_name } = user;
+  const { full_name, selected_course } = user;
   return {
     full_name,
+    selected_course,
   };
 };
 
