@@ -110,7 +110,6 @@ export const deleteSelectedCourse = async (
 
   try {
     const deletedCourse = await deleteSelectedCourseService(course_id);
-    
     return res.status(200).json({
       message: "Course Deleted successfully!",
       status: "success",
