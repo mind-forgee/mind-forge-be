@@ -61,6 +61,27 @@ export const createCourseService = async (
       },
     });
 
+    for (const chapter of existingCourse.chapters) {
+      await prisma.chapterProgress.upsert({
+        where: {
+          user_id_chapter_id: {
+            user_id: userId,
+            chapter_id: chapter.id,
+          },
+        },
+        create: {
+          user_id: userId,
+          chapter_id: chapter.id,
+          is_done: false,
+        },
+        update: {
+          user_id: userId,
+          chapter_id: chapter.id,
+          is_done: false,
+        },
+      });
+    }
+
     return existingCourse;
   }
 
@@ -143,5 +164,84 @@ export const createCourseService = async (
     });
   }
 
+  for (const chapter of course.chapters) {
+    await prisma.chapterProgress.upsert({
+      where: {
+        user_id_chapter_id: {
+          user_id: userId,
+          chapter_id: chapter.id,
+        },
+      },
+      create: {
+        user_id: userId,
+        chapter_id: chapter.id,
+        is_done: false,
+      },
+      update: {
+        user_id: userId,
+        chapter_id: chapter.id,
+        is_done: false,
+      },
+    });
+  }
+
   return course;
+};
+
+export const getUserCourseService = async (user_id: string) => {
+  const courseUser = await prisma.selectedCourse.findUnique({
+    where: {
+      user_id,
+    },
+    include: {
+      course: {
+        include: {
+          chapters: {
+            include: {
+              progress: {
+                where: {
+                  user_id,
+                },
+                select: {
+                  is_done: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!courseUser) {
+    throw new APIError("Course User Not Found!", 404);
+  }
+
+  return courseUser;
+};
+
+export const selectCompleteChapterService = async (
+  user_id: string,
+  chapter_id: string,
+) => {
+  const completedChapter = await prisma.chapterProgress.update({
+    where: {
+      user_id_chapter_id: { user_id, chapter_id },
+    },
+    data: { is_done: true },
+  });
+
+  return completedChapter;
+};
+
+export const getAllCourseService = async () => {
+  return await prisma.course.findMany();
+};
+
+export const deleteSelectedCourseService = async (course_id: string) => {
+  return await prisma.course.delete({
+    where: {
+      id: course_id,
+    },
+  });
 };

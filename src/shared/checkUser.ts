@@ -4,6 +4,9 @@ export const checkUser = async (email: string) => {
     where: {
       email,
     },
+    include: {
+      selected_course: true,
+    },
   });
   return result;
 };

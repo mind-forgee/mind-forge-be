@@ -3,6 +3,7 @@ import config from "../config/config";
 import prisma from "../database/database";
 import { chapterPrompt } from "./getPrompt";
 import { textGeminiModel } from "./geminiAI";
+import { getLinkYoutubeVideo } from "./getYoutubeVideo";
 
 type GeneratedChapterContentRequest = {
   chapterId: string;
@@ -25,7 +26,10 @@ export const generateChapterContent = async (
   chapter: GeneratedChapterContentRequest,
 ) => {
   console.log("Adding chapter to queue:", chapter);
-  chapterQueue.add(chapter);
+  await chapterQueue.add(chapter, {
+    jobId: chapter.chapterId,
+    removeOnComplete: true,
+  });
 };
 
 const processChapterQueue = async (
@@ -65,16 +69,16 @@ const processChapterQueue = async (
     chapter.is_study_case,
   );
 
-  const responseModel = await textGeminiModel.generateContent({
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-    generationConfig: {
-      responseMimeType: "text/plain",
-    },
-  });
-
   try {
+    const responseModel = await textGeminiModel.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "text/plain",
+      },
+    });
+
     await prisma.chapter.update({
-      where: { id: chapterId, content: null },
+      where: { id: chapterId },
       data: {
         content: responseModel.response.text(),
         is_active: true,
@@ -86,15 +90,46 @@ const processChapterQueue = async (
     );
   }
 
+  if (chapter.is_study_case) return Promise.resolve();
+
+  try {
+    const linkYoutubeVideo = await getLinkYoutubeVideo(chapter.title);
+    console.log(
+      "Chapter id: ",
+      chapterId,
+      "YouTube video link:",
+      linkYoutubeVideo,
+    );
+
+    await prisma.chapter.update({
+      where: { id: chapterId },
+      data: {
+        video_url: linkYoutubeVideo.url,
+        video_url_embed: linkYoutubeVideo.url_embed,
+      },
+    });
+  } catch (error) {
+    console.log("Failed to get YouTube video link:", error);
+    return Promise.resolve();
+  }
+
   return Promise.resolve();
 };
 
 chapterQueue.process(10, processChapterQueue);
 
-chapterQueue.on("completed", (job) => {
-  console.log(`Job ID ${job.id} completed`);
+chapterQueue.on("completed", (job: Job<GeneratedChapterContentRequest>) => {
+  console.log(
+    `Generated content for chapter ID ${job.data.chapterId} is completed.`,
+  );
 });
 
-chapterQueue.on("failed", (job, err) => {
-  console.error(`Job ID ${job.id} failed with error:`, err);
-});
+chapterQueue.on(
+  "failed",
+  (job: Job<GeneratedChapterContentRequest>, err: any) => {
+    console.error(
+      `Generated content for chapter ID ${job.data.chapterId} is failed!! error: ${err}`,
+      err,
+    );
+  },
+);

@@ -37,7 +37,6 @@ export const loginUserService = async (
   res: Response,
 ) => {
   const user = await checkUser(email);
-
   if (!user) {
     throw new APIError("Invalid Credentials!", 400);
   }
@@ -50,14 +49,15 @@ export const loginUserService = async (
   const token = generateToken({ user_id: user.id, role: user.role });
   setAuthCookie(token, res);
 
-  const { full_name } = user;
+  const { full_name, selected_course } = user;
   return {
     full_name,
+    selected_course,
   };
 };
 
 export const getUserService = async (user_id: string) => {
-  const existingUser = await prisma.user.findFirst({
+  const user = await prisma.user.findFirst({
     where: {
       id: user_id,
     },
@@ -76,12 +76,12 @@ export const getUserService = async (user_id: string) => {
     },
   });
 
-  if (!existingUser) {
+  if (!user) {
     throw new APIError("User not found", 404);
   }
 
   return {
-    existingUser,
+    user,
   };
 };
 

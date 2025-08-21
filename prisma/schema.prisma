@@ -35,7 +35,7 @@ model User {
 
     generated_course Course[]
     selected_course  SelectedCourse?
-    chapter_progress CourseProgress[]
+    chapter_progress chapterProgress[]
 }
 
 model Topic {
@@ -82,10 +82,11 @@ model Chapter {
     course_id   String
     order_index Int
 
-    title       String
-    description String  @db.Text
-    content     String? @db.Text
-    video_url   String? @db.Text
+    title           String
+    description     String  @db.Text
+    content         String? @db.Text
+    video_url       String? @db.Text
+    video_url_embed String? @db.Text
 
     is_active     Boolean @default(false)
     is_study_case Boolean @default(false)
@@ -93,8 +94,8 @@ model Chapter {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    course   Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
-    progress CourseProgress[]
+    course   Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
+    progress chapterProgress[]
 
     @@unique([course_id, order_index])
     @@index([course_id, order_index])
@@ -114,7 +115,7 @@ model SelectedCourse {
     @@unique([user_id, course_id])
 }
 
-model CourseProgress {
+model chapterProgress {
     user_id    String
     chapter_id String
 
