@@ -49,9 +49,11 @@ export const loginUserService = async (
   const token = generateToken({ user_id: user.id, role: user.role });
   setAuthCookie(token, res);
 
-  const { full_name, selected_course } = user;
+  const { full_name, selected_course, role } = user;
   return {
     full_name,
+    email,
+    role,
     selected_course,
   };
 };
