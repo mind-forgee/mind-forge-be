@@ -224,6 +224,19 @@ export const selectCompleteChapterService = async (
   user_id: string,
   chapter_id: string,
 ) => {
+  const progressExists = await prisma.chapterProgress.findUnique({
+    where: {
+      user_id_chapter_id: {
+        user_id,
+        chapter_id,
+      },
+    },
+  });
+
+  if (!progressExists) {
+    throw new APIError("Chapter progress not found", 404);
+  }
+
   const completedChapter = await prisma.chapterProgress.update({
     where: {
       user_id_chapter_id: { user_id, chapter_id },
