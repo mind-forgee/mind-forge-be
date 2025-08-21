@@ -80,6 +80,10 @@ export const createCourseService = async (
           is_done: false,
         },
       });
+
+      generateChapterContent({
+        chapterId: chapter.id,
+      });
     }
 
     return existingCourse;

@@ -23,7 +23,7 @@ export const verifyToken = async (
       role: string;
     };
     req.user = { user_id, role, iat, exp };
-    console.log(req.user);
+
     next();
   } catch (err) {
     console.error(err);
