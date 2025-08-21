@@ -81,7 +81,7 @@ export const createCourseService = async (
         },
       });
 
-      generateChapterContent({
+      await generateChapterContent({
         chapterId: chapter.id,
       });
     }
