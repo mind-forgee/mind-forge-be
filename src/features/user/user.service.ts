@@ -90,3 +90,45 @@ export const getUserService = async (user_id: string) => {
 export const logoutUserService = async (res: Response) => {
   clearAuthCookie(res);
 };
+
+export const changePasswordService = async (
+  user_id: string,
+  old_password: string,
+  new_password: string,
+  confirm_new_password: string,
+) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: user_id,
+    },
+  });
+
+  const oldPasswordIsMatch = await bcrypt.compare(
+    old_password,
+    user?.password as string,
+  );
+
+  const newPasswordIsMatch =
+    new_password.trim() === confirm_new_password.trim();
+
+  if (!oldPasswordIsMatch) {
+    throw new Error("Old password is do not match");
+  }
+
+  if (!newPasswordIsMatch) {
+    throw new Error("New password is do not match");
+  }
+
+  const hashedNewPassword = await bcrypt.hash(new_password, 10);
+
+  const changedPassword = await prisma.user.update({
+    where: {
+      id: user_id,
+    },
+    data: {
+      password: hashedNewPassword,
+    },
+  });
+
+  return { message: "Password changed successfully" };
+};

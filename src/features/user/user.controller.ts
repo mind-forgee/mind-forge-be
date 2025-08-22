@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
+  changePasswordService,
   createUserService,
   getUserService,
   loginUserService,
@@ -39,7 +40,7 @@ export const loginUser = async (
   next: NextFunction,
 ) => {
   const { email, password } = req.body as z.infer<typeof loginUserSchema>;
-  console.log(req.body);
+
   try {
     const { full_name, selected_course, role } = await loginUserService(
       email,
@@ -91,6 +92,31 @@ export const logoutUser = async (
     return res.status(200).json({
       status: "success",
       message: "Log Out Success",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const changePassword = async (
+  req: AuthRequest,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
+  try {
+    const user_id = req?.user?.user_id as string;
+    const { old_password, new_password, confirm_new_password } = req.body;
+
+    const { message } = await changePasswordService(
+      user_id,
+      old_password,
+      new_password,
+      confirm_new_password,
+    );
+
+    return res.status(200).json({
+      message,
+      status: "success",
     });
   } catch (err) {
     next(err);
