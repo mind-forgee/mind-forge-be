@@ -5,6 +5,7 @@ import {
   createCourse,
   deleteSelectedCourse,
   getAllCourse,
+  getAllStudyCaseProofs,
   getUserCourse,
   selectCompleteChapter,
 } from "./course.controller";
@@ -43,6 +44,13 @@ courseRoutes.post(
   verifyToken,
   validate(collectStudyCaseProofSchema, "body"),
   collectStudyCaseProof,
+);
+
+courseRoutes.get(
+  "/study-case/proofs",
+  verifyToken,
+  isAdmin,
+  getAllStudyCaseProofs,
 );
 
 export default courseRoutes;

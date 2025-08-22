@@ -6,6 +6,7 @@ import {
   createCourseService,
   deleteSelectedCourseService,
   getAllCourseService,
+  getAllStudyCaseProofsService,
   getUserCourseService,
   selectCompleteChapterService,
 } from "./course.service";
@@ -127,6 +128,23 @@ export const getAllCourse = async (
       message: "Get all course successfully",
       status: "success",
       data: allCourses,
+    });
+  } catch (err) {
+    console.log("Error selected all course");
+    next(err);
+  }
+};
+export const getAllStudyCaseProofs = async (
+  req: AuthRequest,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
+  try {
+    const allProofs = await getAllStudyCaseProofsService();
+    return res.status(200).json({
+      message: "Get all course successfully",
+      status: "success",
+      data: allProofs,
     });
   } catch (err) {
     console.log("Error selected all course");

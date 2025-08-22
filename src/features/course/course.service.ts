@@ -266,6 +266,30 @@ export const collectStudyCaseProofService = async (
   return submitProofLink;
 };
 
+export const getAllStudyCaseProofsService = async () => {
+  return await prisma.studyCaseProof.findMany({
+    include: {
+      chapter: {
+        select: {
+          title: true,
+          course: {
+            select: {
+              title: true,
+              difficulty: true,
+            },
+          },
+        },
+      },
+      user: {
+        select: {
+          full_name: true,
+          email: true,
+        },
+      },
+    },
+  });
+};
+
 export const selectCompleteChapterService = async (
   user_id: string,
   chapter_id: string,
