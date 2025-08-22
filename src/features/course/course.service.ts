@@ -210,6 +210,15 @@ export const getUserCourseService = async (user_id: string) => {
                   is_done: true,
                 },
               },
+              study_case_proofs: {
+                where: {
+                  user_id,
+                },
+                select: {
+                  proof_url: true,
+                  approved: true,
+                },
+              },
             },
           },
         },
@@ -222,6 +231,96 @@ export const getUserCourseService = async (user_id: string) => {
   }
 
   return courseUser;
+};
+
+export const updateStatusStudyCaseService = async (
+  user_id: string,
+  chapter_id: string,
+  approved: boolean,
+) => {
+  const studyCase = await prisma.studyCaseProof.findUnique({
+    where: {
+      chapter_id_user_id: {
+        chapter_id,
+        user_id,
+      },
+    },
+  });
+
+  if (!studyCase) {
+    throw new APIError("User has not submitted the study case!", 404);
+  }
+
+  const updatedProof = await prisma.studyCaseProof.update({
+    where: {
+      chapter_id_user_id: {
+        chapter_id,
+        user_id,
+      },
+    },
+    data: {
+      approved,
+    },
+  });
+
+  return updatedProof;
+};
+
+export const collectStudyCaseProofService = async (
+  user_id: string,
+  chapter_id: string,
+  proof_url: string,
+) => {
+  const chapter = await prisma.chapter.findUnique({
+    where: { id: chapter_id, is_study_case: true },
+  });
+
+  if (!chapter) {
+    throw new APIError("Chapter not found or not a study case", 404);
+  }
+
+  const submitProofLink = await prisma.studyCaseProof.upsert({
+    where: {
+      chapter_id_user_id: {
+        chapter_id,
+        user_id,
+      },
+    },
+    create: {
+      chapter_id,
+      user_id,
+      proof_url,
+    },
+    update: {
+      proof_url,
+    },
+  });
+
+  return submitProofLink;
+};
+
+export const getAllStudyCaseProofsService = async () => {
+  return await prisma.studyCaseProof.findMany({
+    include: {
+      chapter: {
+        select: {
+          title: true,
+          course: {
+            select: {
+              title: true,
+              difficulty: true,
+            },
+          },
+        },
+      },
+      user: {
+        select: {
+          full_name: true,
+          email: true,
+        },
+      },
+    },
+  });
 };
 
 export const selectCompleteChapterService = async (

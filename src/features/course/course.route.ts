@@ -1,15 +1,23 @@
 import { Router } from "express";
 
 import {
+  collectStudyCaseProof,
   createCourse,
   deleteSelectedCourse,
   getAllCourse,
+  getAllStudyCaseProofs,
   getUserCourse,
   selectCompleteChapter,
+  updateStatusStudyCase,
 } from "./course.controller";
 import { verifyToken } from "../../middleware/verifyToken";
 import { validate } from "../../http/validate";
-import { createCourseSchema, deleteCourseSchema } from "./course.schema";
+import {
+  collectStudyCaseProofSchema,
+  createCourseSchema,
+  deleteCourseSchema,
+  updateStatusStudyCaseSchema,
+} from "./course.schema";
 import { isAdmin } from "../../middleware/isAdmin";
 
 const courseRoutes = Router();
@@ -31,6 +39,28 @@ courseRoutes.delete(
   isAdmin,
   validate(deleteCourseSchema, "params"),
   deleteSelectedCourse,
+);
+
+courseRoutes.post(
+  "/chapter/:chapter_id/study-case",
+  verifyToken,
+  validate(collectStudyCaseProofSchema, "body"),
+  collectStudyCaseProof,
+);
+
+courseRoutes.get(
+  "/study-case/proofs",
+  verifyToken,
+  isAdmin,
+  getAllStudyCaseProofs,
+);
+
+courseRoutes.patch(
+  "/study-case/proofs/status",
+  verifyToken,
+  isAdmin,
+  validate(updateStatusStudyCaseSchema, "body"),
+  updateStatusStudyCase,
 );
 
 export default courseRoutes;

@@ -33,9 +33,10 @@ model User {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    generated_course Course[]
-    selected_course  SelectedCourse?
-    chapter_progress chapterProgress[]
+    generated_course  Course[]
+    selected_course   SelectedCourse?
+    chapter_progress  chapterProgress[]
+    study_case_proofs StudyCaseProof[]
 }
 
 model Topic {
@@ -94,8 +95,9 @@ model Chapter {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    course   Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
-    progress chapterProgress[]
+    course            Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
+    progress          chapterProgress[]
+    study_case_proofs StudyCaseProof[]
 
     @@unique([course_id, order_index])
     @@index([course_id, order_index])
@@ -113,6 +115,23 @@ model SelectedCourse {
 
     @@id([user_id, course_id])
     @@unique([user_id, course_id])
+}
+
+model StudyCaseProof {
+    chapter_id String
+    user_id    String
+
+    proof_url String  @db.Text
+    approved  Boolean @default(false)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    chapter Chapter @relation(fields: [chapter_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@id([chapter_id, user_id])
+    @@unique([chapter_id, user_id])
 }
 
 model chapterProgress {
