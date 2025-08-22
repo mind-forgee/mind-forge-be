@@ -21,3 +21,13 @@ export const deleteCourseSchema = z.object({
     .string({ message: "Course Id Is required" })
     .min(4, { message: "Course id minimal 4 letters" }),
 });
+
+export const collectStudyCaseProofSchema = z.object({
+  proof_url: z
+    .url({
+      message: "Proof URL must be a valid URL",
+    })
+    .min(1, {
+      message: "Proof URL is required",
+    }),
+});

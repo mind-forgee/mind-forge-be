@@ -39,7 +39,7 @@ export const loginUser = async (
   next: NextFunction,
 ) => {
   const { email, password } = req.body as z.infer<typeof loginUserSchema>;
-  console.log(req.body);
+
   try {
     const { full_name, selected_course } = await loginUserService(
       email,

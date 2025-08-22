@@ -224,6 +224,39 @@ export const getUserCourseService = async (user_id: string) => {
   return courseUser;
 };
 
+export const collectStudyCaseProofService = async (
+  user_id: string,
+  chapter_id: string,
+  proof_url: string,
+) => {
+  const chapter = await prisma.chapter.findUnique({
+    where: { id: chapter_id, is_study_case: true },
+  });
+
+  if (!chapter) {
+    throw new APIError("Chapter not found or not a study case", 404);
+  }
+
+  const submitProofLink = await prisma.studyCaseProof.upsert({
+    where: {
+      chapter_id_user_id: {
+        chapter_id,
+        user_id,
+      },
+    },
+    create: {
+      chapter_id,
+      user_id,
+      proof_url,
+    },
+    update: {
+      proof_url,
+    },
+  });
+
+  return submitProofLink;
+};
+
 export const selectCompleteChapterService = async (
   user_id: string,
   chapter_id: string,

@@ -2,13 +2,18 @@ import { NextFunction, Response } from "express";
 import { APIResponse } from "../../models/response";
 import z from "zod";
 import {
+  collectStudyCaseProofService,
   createCourseService,
   deleteSelectedCourseService,
   getAllCourseService,
   getUserCourseService,
   selectCompleteChapterService,
 } from "./course.service";
-import { createCourseSchema, deleteCourseSchema } from "./course.schema";
+import {
+  collectStudyCaseProofSchema,
+  createCourseSchema,
+  deleteCourseSchema,
+} from "./course.schema";
 import { AuthRequest } from "../../middleware/verifyToken";
 
 export const createCourse = async (
@@ -76,6 +81,35 @@ export const selectCompleteChapter = async (
       message: "Chapter completed successfully",
       status: "success",
       data: completedChapter,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const collectStudyCaseProof = async (
+  req: AuthRequest,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
+  try {
+    const user_id = req?.user?.user_id;
+    const { chapter_id } = req.params;
+
+    const { proof_url } = req.body as z.infer<
+      typeof collectStudyCaseProofSchema
+    >;
+
+    const result = await collectStudyCaseProofService(
+      user_id as string,
+      chapter_id,
+      proof_url,
+    );
+
+    return res.status(200).json({
+      message: "Study case proof collected successfully",
+      status: "success",
+      data: result,
     });
   } catch (err) {
     next(err);

@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import {
+  collectStudyCaseProof,
   createCourse,
   deleteSelectedCourse,
   getAllCourse,
@@ -9,7 +10,11 @@ import {
 } from "./course.controller";
 import { verifyToken } from "../../middleware/verifyToken";
 import { validate } from "../../http/validate";
-import { createCourseSchema, deleteCourseSchema } from "./course.schema";
+import {
+  collectStudyCaseProofSchema,
+  createCourseSchema,
+  deleteCourseSchema,
+} from "./course.schema";
 import { isAdmin } from "../../middleware/isAdmin";
 
 const courseRoutes = Router();
@@ -31,6 +36,13 @@ courseRoutes.delete(
   isAdmin,
   validate(deleteCourseSchema, "params"),
   deleteSelectedCourse,
+);
+
+courseRoutes.post(
+  "/chapter/:chapter_id/study-case",
+  verifyToken,
+  validate(collectStudyCaseProofSchema, "body"),
+  collectStudyCaseProof,
 );
 
 export default courseRoutes;
