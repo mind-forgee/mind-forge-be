@@ -6,17 +6,17 @@ services:
       dockerfile: Dockerfile
     ports:
       - ${PORT}:${PORT}
+    env_file:
+      - .env
     environment:
       - NODE_ENV=production
-      - REDIS_HOST=redis
-  redis:
-    container_name: mind-forge-redis
-    image: redis:7.4-alpine
-    ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
-    volumes:
-      - redis:/data
-
-volumes:
-  redis:
-    driver: local
+  worker:
+    container_name: mind-forge-be-worker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["npm", "run", "start:worker"]
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
