@@ -56,14 +56,24 @@
     Open the new `.env` file and fill all the values.
 
     ```env
-    NODE_ENV=development # or production
     PORT=3001
+    NODE_ENV=development # or production
 
-    # Postgre Database URL for local development
-    DATABASE_URL=postgresql://user:password@localhost:5432/mydatabase
+    # Postgre database connection string
+    # Format: postgresql://<username>:<password>@<host>:<port>/<database>
+    # Example: postgresql://user:password@localhost:5432/mydatabase
 
-    # Generate a strong secret with: openssl rand -base64 32
-    JWT_SECRET=your-super-strong-jwt-secret
+    DATABASE_URL=
+    JWT_SECRET=
+
+    REDIS_PORT=6379
+    REDIS_HOST=localhost
+    REDIS_USERNAME=
+    REDIS_PASSWORD=
+    REDIS_DB=0
+
+    YOUTUBE_API_BASE_URL=https://www.googleapis.com/youtube/v3/search
+    YOUTUBE_API_KEY=
     ```
 
 3.  **Install Go Dependencies :**
@@ -94,6 +104,14 @@
     ```
 
     The server will now be running at `http://localhost:3001`.
+
+7.  **Run Worker:**
+
+    In a separate terminal, run the worker to process background tasks:
+
+    ```bash
+    npm run dev:worker
+    ```
 
 # Functional Requirements Document (FRD)
 
