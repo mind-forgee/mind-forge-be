@@ -26,16 +26,6 @@
      - [Social Learning Features and Community Integration](#social-learning-features-and-community-integration)
      - [Advanced Admin Dashboard and Content Management System](#advanced-admin-dashboard-and-content-management-system)
 5. [Project Structure](#project-structure)
-   - [src/app.ts](#srcappts)
-   - [src/server.ts](#srcserverts)
-   - [prisma/schema.prisma](#prismaschemaprisma)
-   - [package.json](#packagejson)
-   - [tsconfig.json](#tsconfigjson)
-   - [src/features/](#srcfeatures)
-   - [src/middleware/](#srcmiddleware)
-   - [src/shared/](#srcshared)
-   - [docker-compose.yml](#docker-composeyml)
-   - [README.md](#readmemd)
 6. [Low-Level System Architecture (LLA)](#low-level-system-architecture-lla)
    - [Diagram showing frontend, backend, database, APIs](#diagram-showing-frontend-backend-database-apis)
    - [Rationale for Technology Choices](#rationale-for-technology-choices)
@@ -640,6 +630,120 @@ GitHub Actions was chosen to automate build, test, and deployment pipelines. Its
 **Interaction**:
 
 - Middleware is invoked in the request lifecycle to validate and process requests before reaching controllers.
+
+# Database Design (ERD)
+
+## Entity-Relationship Diagram
+
+![ERD Diagram](https://hgojinfbxixjverqabql.supabase.co/storage/v1/object/public/readme/erd.jpeg)
+
+## Table descriptions & purposes
+
+### User Table
+
+- **Description**: Stores user information including authentication details and roles.
+- **Purpose**:
+  - Manage user accounts and authentication.
+  - Assign roles for access control.
+
+### Topic Table
+
+- **Description**: Represents topics for courses.
+- **Purpose**:
+  - Categorize courses under specific topics.
+  - Provide a structure for organizing educational content.
+
+### Course Table
+
+- **Description**: Contains course details including difficulty and associated topic.
+- **Purpose**:
+  - Store information about courses.
+  - Link courses to topics and difficulty levels.
+
+### Chapter Table
+
+- **Description**: Represents chapters within a course.
+- **Purpose**:
+  - Divide courses into smaller, manageable sections.
+  - Provide detailed content for each chapter.
+
+### SelectedCourse Table
+
+- **Description**: Tracks courses selected by users.
+- **Purpose**:
+  - Record user preferences for courses.
+  - Enable personalized learning experiences.
+
+### StudyCaseProof Table
+
+- **Description**: Stores proof submissions for study cases.
+- **Purpose**:
+  - Track user submissions for study cases.
+  - Facilitate review and approval processes.
+
+### chapterProgress Table
+
+- **Description**: Tracks user progress in chapters.
+- **Purpose**:
+  - Monitor user completion of chapters.
+  - Provide insights into learning progress.
+
+## Key indexes or constraints
+
+### User Table
+
+- `id`: Primary key.
+- `email`: Unique constraint.
+- Foreign key relationships:
+  - `generated_course` (Course).
+  - `selected_course` (SelectedCourse).
+  - `chapter_progress` (chapterProgress).
+  - `study_case_proofs` (StudyCaseProof).
+
+### Topic Table
+
+- `id`: Primary key.
+- `name`: Unique constraint.
+- Foreign key relationships:
+  - `courses` (Course).
+
+### Course Table
+
+- `id`: Primary key.
+- `topic_id`: Foreign key referencing Topic.
+- `generated_by`: Foreign key referencing User.
+- Composite unique constraint: `topic_id, difficulty`.
+
+### Chapter Table
+
+- `id`: Primary key.
+- `course_id`: Foreign key referencing Course.
+- Composite unique constraint: `course_id, order_index`.
+- Index: `course_id, order_index`.
+
+### SelectedCourse Table
+
+- Composite primary key: `user_id, course_id`.
+- Composite unique constraint: `user_id, course_id`.
+- Foreign key relationships:
+  - `user_id` (User).
+  - `course_id` (Course).
+
+### StudyCaseProof Table
+
+- Composite primary key: `chapter_id, user_id`.
+- Composite unique constraint: `chapter_id, user_id`.
+- Foreign key relationships:
+  - `chapter_id` (Chapter).
+  - `user_id` (User).
+
+### chapterProgress Table
+
+- Composite primary key: `user_id, chapter_id`.
+- Composite unique constraint: `user_id, chapter_id`.
+- Foreign key relationships:
+  - `user_id` (User).
+  - `chapter_id` (Chapter).
 
 # DevOps & Deployment Plan
 
