@@ -130,5 +130,5 @@ export const changePasswordService = async (
     },
   });
 
-  return changedPassword;
+  return { message: "Password changed successfully" };
 };

@@ -26,6 +26,5 @@ router.patch(
   verifyToken,
   changePassword,
 );
-// router.patch("/update-profile", verifyToken);
 
 export default router;

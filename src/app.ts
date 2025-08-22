@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import courseRoutes from "./features/course/course.route";
 import topicRoutes from "./features/topic/topic.routes";
+import profileRoutes from "./features/profile/profile.route";
 import "./shared/chapterQueue";
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/api/auth", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/topics", topicRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({
