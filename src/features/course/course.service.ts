@@ -210,6 +210,15 @@ export const getUserCourseService = async (user_id: string) => {
                   is_done: true,
                 },
               },
+              study_case_proofs: {
+                where: {
+                  user_id,
+                },
+                select: {
+                  proof_url: true,
+                  approved: true,
+                },
+              },
             },
           },
         },
