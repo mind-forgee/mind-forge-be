@@ -41,7 +41,7 @@ export const loginUser = async (
   const { email, password } = req.body as z.infer<typeof loginUserSchema>;
   console.log(req.body);
   try {
-    const { full_name, selected_course } = await loginUserService(
+    const { full_name, selected_course, role } = await loginUserService(
       email,
       password,
       res,
@@ -54,6 +54,7 @@ export const loginUser = async (
         full_name,
         email,
         selected_course,
+        role,
       },
     });
   } catch (err) {
