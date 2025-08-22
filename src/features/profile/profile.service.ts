@@ -8,6 +8,9 @@ export const updateProfileService = async (
   const existingEmail = await prisma.user.findUnique({
     where: {
       email: new_email,
+      NOT: {
+        id: user_id,
+      },
     },
   });
 
@@ -22,6 +25,11 @@ export const updateProfileService = async (
     data: {
       email: new_email,
       full_name: new_full_name,
+    },
+    select: {
+      id: true,
+      email: true,
+      full_name: true,
     },
   });
 

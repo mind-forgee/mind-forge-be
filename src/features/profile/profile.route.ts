@@ -7,8 +7,8 @@ const router = Router();
 
 router.patch(
   "/update",
-  validate(profileUpdateSchema, "body"),
   verifyToken,
+  validate(profileUpdateSchema, "body"),
   updateProfile,
 );
 
