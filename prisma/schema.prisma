@@ -121,7 +121,8 @@ model StudyCaseProof {
     chapter_id String
     user_id    String
 
-    proof_url String @db.Text
+    proof_url String  @db.Text
+    approved  Boolean @default(false)
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
