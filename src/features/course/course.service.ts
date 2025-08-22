@@ -233,6 +233,39 @@ export const getUserCourseService = async (user_id: string) => {
   return courseUser;
 };
 
+export const updateStatusStudyCaseService = async (
+  user_id: string,
+  chapter_id: string,
+  approved: boolean,
+) => {
+  const studyCase = await prisma.studyCaseProof.findUnique({
+    where: {
+      chapter_id_user_id: {
+        chapter_id,
+        user_id,
+      },
+    },
+  });
+
+  if (!studyCase) {
+    throw new APIError("User has not submitted the study case!", 404);
+  }
+
+  const updatedProof = await prisma.studyCaseProof.update({
+    where: {
+      chapter_id_user_id: {
+        chapter_id,
+        user_id,
+      },
+    },
+    data: {
+      approved,
+    },
+  });
+
+  return updatedProof;
+};
+
 export const collectStudyCaseProofService = async (
   user_id: string,
   chapter_id: string,

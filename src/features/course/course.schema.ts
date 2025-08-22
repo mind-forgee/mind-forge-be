@@ -31,3 +31,13 @@ export const collectStudyCaseProofSchema = z.object({
       message: "Proof URL is required",
     }),
 });
+
+export const updateStatusStudyCaseSchema = z.object({
+  approved: z.boolean({ message: "Approved status is required" }),
+  chapter_id: z.string({ message: "Chapter ID is required" }).min(1, {
+    message: "Chapter ID is required",
+  }),
+  user_id: z.string({ message: "User ID is required" }).min(1, {
+    message: "User ID is required",
+  }),
+});

@@ -9,11 +9,13 @@ import {
   getAllStudyCaseProofsService,
   getUserCourseService,
   selectCompleteChapterService,
+  updateStatusStudyCaseService,
 } from "./course.service";
 import {
   collectStudyCaseProofSchema,
   createCourseSchema,
   deleteCourseSchema,
+  updateStatusStudyCaseSchema,
 } from "./course.schema";
 import { AuthRequest } from "../../middleware/verifyToken";
 
@@ -109,6 +111,32 @@ export const collectStudyCaseProof = async (
 
     return res.status(200).json({
       message: "Study case proof collected successfully",
+      status: "success",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateStatusStudyCase = async (
+  req: AuthRequest,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
+  try {
+    const { approved, chapter_id, user_id } = req.body as z.infer<
+      typeof updateStatusStudyCaseSchema
+    >;
+
+    const result = await updateStatusStudyCaseService(
+      user_id,
+      chapter_id,
+      approved,
+    );
+
+    return res.status(200).json({
+      message: "Study case proof status updated successfully",
       status: "success",
       data: result,
     });

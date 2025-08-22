@@ -8,6 +8,7 @@ import {
   getAllStudyCaseProofs,
   getUserCourse,
   selectCompleteChapter,
+  updateStatusStudyCase,
 } from "./course.controller";
 import { verifyToken } from "../../middleware/verifyToken";
 import { validate } from "../../http/validate";
@@ -15,6 +16,7 @@ import {
   collectStudyCaseProofSchema,
   createCourseSchema,
   deleteCourseSchema,
+  updateStatusStudyCaseSchema,
 } from "./course.schema";
 import { isAdmin } from "../../middleware/isAdmin";
 
@@ -51,6 +53,14 @@ courseRoutes.get(
   verifyToken,
   isAdmin,
   getAllStudyCaseProofs,
+);
+
+courseRoutes.patch(
+  "/study-case/proofs/status",
+  verifyToken,
+  isAdmin,
+  validate(updateStatusStudyCaseSchema, "body"),
+  updateStatusStudyCase,
 );
 
 export default courseRoutes;
