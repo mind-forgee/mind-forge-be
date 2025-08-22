@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
+  changePasswordService,
   createUserService,
   getUserService,
   loginUserService,
@@ -95,3 +96,42 @@ export const logoutUser = async (
     next(err);
   }
 };
+
+export const changePassword = async (
+  req: AuthRequest,
+  res: Response<APIResponse>,
+  next: NextFunction,
+) => {
+  try {
+    const user_id = req?.user?.user_id as string;
+    const { old_password, new_password, confirm_new_password } = req.body;
+
+    const changed_user_password = await changePasswordService(
+      user_id,
+      old_password,
+      new_password,
+      confirm_new_password,
+    );
+
+    return res.status(200).json({
+      message: "Password changed successfully!",
+      status: "success",
+      data: changed_user_password,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+
+// export const updateProfile = async (
+//   req: AuthRequest,
+//   res: Response<APIResponse>,
+//   next: NextFunction,
+// ) => {
+//   try {
+//   } catch (err) {
+//     const user_id = req?.user?.user_id as string;
+//     const { new_email,  };
+//   }
+// };

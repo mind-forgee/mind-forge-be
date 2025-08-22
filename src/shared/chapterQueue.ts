@@ -5,11 +5,11 @@ import { chapterPrompt } from "./getPrompt";
 import { textGeminiModel } from "./geminiAI";
 import { getLinkYoutubeVideo } from "./getYoutubeVideo";
 
-type GeneratedChapterContentRequest = {
+export type GeneratedChapterContentRequest = {
   chapterId: string;
 };
 
-const chapterQueue = new Bull("chapter", {
+export const chapterQueue = new Bull("chapter", {
   redis: {
     port: config.redisPort,
     host: config.redisHost,
@@ -32,7 +32,7 @@ export const generateChapterContent = async (
   });
 };
 
-const processChapterQueue = async (
+export const processChapterQueue = async (
   job: Job<GeneratedChapterContentRequest>,
 ) => {
   console.log("Get job data", job.data);
@@ -115,21 +115,3 @@ const processChapterQueue = async (
 
   return Promise.resolve();
 };
-
-chapterQueue.process(10, processChapterQueue);
-
-chapterQueue.on("completed", (job: Job<GeneratedChapterContentRequest>) => {
-  console.log(
-    `Generated content for chapter ID ${job.data.chapterId} is completed.`,
-  );
-});
-
-chapterQueue.on(
-  "failed",
-  (job: Job<GeneratedChapterContentRequest>, err: any) => {
-    console.error(
-      `Generated content for chapter ID ${job.data.chapterId} is failed!! error: ${err}`,
-      err,
-    );
-  },
-);
