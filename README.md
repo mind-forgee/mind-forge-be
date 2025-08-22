@@ -30,7 +30,11 @@
    - [Diagram showing frontend, backend, database, APIs](#diagram-showing-frontend-backend-database-apis)
    - [Rationale for Technology Choices](#rationale-for-technology-choices)
    - [Breakdown of Modules/Services and How They Interact](#breakdown-of-modulesservices-and-how-they-interact)
-7. [DevOps & Deployment Plan](#devops--deployment-plan)
+7. [Database Design (ERD)](#database-design-erd)
+   - [Entity-Relationship Diagram](#entity-relationship-diagram)
+   - [Table descriptions & purposes](#table-descriptions--purposes)
+   - [Key indexes or constraints](#key-indexes-or-constraints)
+8. [DevOps & Deployment Plan](#devops--deployment-plan)
    - [GitHub Actions Configuration](#github-actions-configuration)
 
 ### Local Dev Setup
