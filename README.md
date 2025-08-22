@@ -18,7 +18,14 @@
    - [Scalability Considerations](#scalability-considerations)
    - [Security Measures](#security-measures)
    - [Maintainability Principles](#maintainability-principles)
-4. [Project Structure](#project-structure)
+4. [Out-of-Scope Features](#out-of-scope-features)
+   - [Features Explicitly Not Included in This Iteration](#features-explicitly-not-included-in-this-iteration)
+     - [Advanced Analytics and Learning Insights](#advanced-analytics-and-learning-insights)
+     - [Multi-Language Course Content Support](#multi-language-course-content-support)
+     - [Advanced Course Content Types and Interactive Elements](#advanced-course-content-types-and-interactive-elements)
+     - [Social Learning Features and Community Integration](#social-learning-features-and-community-integration)
+     - [Advanced Admin Dashboard and Content Management System](#advanced-admin-dashboard-and-content-management-system)
+5. [Project Structure](#project-structure)
    - [src/app.ts](#srcappts)
    - [src/server.ts](#srcserverts)
    - [prisma/schema.prisma](#prismaschemaprisma)
@@ -29,11 +36,11 @@
    - [src/shared/](#srcshared)
    - [docker-compose.yml](#docker-composeyml)
    - [README.md](#readmemd)
-5. [Low-Level System Architecture (LLA)](#low-level-system-architecture-lla)
+6. [Low-Level System Architecture (LLA)](#low-level-system-architecture-lla)
    - [Diagram showing frontend, backend, database, APIs](#diagram-showing-frontend-backend-database-apis)
    - [Rationale for Technology Choices](#rationale-for-technology-choices)
    - [Breakdown of Modules/Services and How They Interact](#breakdown-of-modulesservices-and-how-they-interact)
-6. [DevOps & Deployment Plan](#devops--deployment-plan)
+7. [DevOps & Deployment Plan](#devops--deployment-plan)
    - [GitHub Actions Configuration](#github-actions-configuration)
 
 ### Local Dev Setup
@@ -400,6 +407,42 @@
 - **Modular Architecture:** Organize code into features (e.g., `user`, `course`, `topic`) for better maintainability.
 - **CLI Logging:** Use middleware for centralized error logging and debugging.
 - **Documentation:** Maintain up-to-date API documentation in [postman](https://www.postman.com/jevvonn-team/workspace/mind-forge-api-documentation).
+
+---
+
+## Out-of-Scope Features
+
+### Features Explicitly Not Included in This Iteration
+
+### 1. **Advanced Analytics and Learning Insights**
+
+- **What**: Detailed learning analytics, progress reports, time tracking, learning pattern analysis, and personalized recommendations based on user behavior
+- **Why Out of Scope**: While basic progress percentage tracking is included, comprehensive analytics would require additional data collection, complex algorithms, and reporting infrastructure that extends beyond the core MVP functionality
+- **Future Consideration**: Could be added in Phase 2 to provide users with deeper insights into their learning journey
+
+### 2. **Multi-Language Course Content Support**
+
+- **What**: Ability to generate and deliver course content in multiple languages, including internationalization (i18n) of the platform interface
+- **Why Out of Scope**: The current AI integration with Gemini focuses on single-language content generation. Multi-language support would require additional AI model configurations, translation services, and extensive localization work
+- **Future Consideration**: Essential for global expansion but not critical for initial market validation
+
+### 3. **Advanced Course Content Types and Interactive Elements**
+
+- **What**: Video lectures, interactive quizzes, coding challenges, multimedia content, embedded simulations, or gamification elements beyond basic chapter completion
+- **Why Out of Scope**: The current system focuses on text-based chapter content with optional study case proof submission. Rich media and interactive content would require additional infrastructure, storage solutions, and complex content management
+- **Future Consideration**: Would significantly enhance user engagement but requires substantial development resources
+
+### 4. **Social Learning Features and Community Integration**
+
+- **What**: Discussion forums, peer-to-peer learning, study groups, course reviews/ratings, social sharing, or collaborative learning features
+- **Why Out of Scope**: The current architecture focuses on individual learning paths. Social features would require additional database schemas, real-time communication infrastructure, moderation systems, and complex user interaction patterns
+- **Future Consideration**: Could transform the platform into a comprehensive learning community but represents a major scope expansion
+
+### 5. **Advanced Admin Dashboard and Content Management System**
+
+- **What**: Comprehensive admin interface for course management, user analytics, content moderation, bulk operations, advanced reporting, and fine-grained permission management beyond basic CRUD operations
+- **Why Out of Scope**: Current admin functionality is limited to basic course and topic management through API endpoints. A full-featured admin dashboard would require a separate frontend application, extensive UI/UX design, and additional backend endpoints
+- **Future Consideration**: Critical for scaling operations but not essential for proving the core learning concept
 
 ---
 
