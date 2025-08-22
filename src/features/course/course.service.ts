@@ -293,6 +293,7 @@ export const collectStudyCaseProofService = async (
     },
     update: {
       proof_url,
+      approved: false,
     },
   });
 
