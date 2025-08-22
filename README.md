@@ -1,5 +1,41 @@
 # MindForge Backend Service Repository
 
+## Table of Contents
+
+1. [MindForge Backend Service Repository](#mindforge-backend-service-repository)
+   - [Local Dev Setup](#local-dev-setup)
+2. [Functional Requirements Document (FRD)](#functional-requirements-document-frd)
+   - [User Stories and Use Cases](#user-stories-and-use-cases)
+     - [Feature: User](#feature-user)
+     - [Feature: Profile](#feature-profile)
+     - [Feature: Course](#feature-course)
+     - [Feature: Topic](#feature-topic)
+   - [Role-based Access Definitions](#role-based-access-definitions)
+   - [Workflow Descriptions](#workflow-descriptions)
+3. [Non-Functional Requirements (NFR)](#non-functional-requirements-nfr)
+   - [Performance Targets](#performance-targets)
+   - [Availability Goals](#availability-goals)
+   - [Scalability Considerations](#scalability-considerations)
+   - [Security Measures](#security-measures)
+   - [Maintainability Principles](#maintainability-principles)
+4. [Project Structure](#project-structure)
+   - [src/app.ts](#srcappts)
+   - [src/server.ts](#srcserverts)
+   - [prisma/schema.prisma](#prismaschemaprisma)
+   - [package.json](#packagejson)
+   - [tsconfig.json](#tsconfigjson)
+   - [src/features/](#srcfeatures)
+   - [src/middleware/](#srcmiddleware)
+   - [src/shared/](#srcshared)
+   - [docker-compose.yml](#docker-composeyml)
+   - [README.md](#readmemd)
+5. [Low-Level System Architecture (LLA)](#low-level-system-architecture-lla)
+   - [Diagram showing frontend, backend, database, APIs](#diagram-showing-frontend-backend-database-apis)
+   - [Rationale for Technology Choices](#rationale-for-technology-choices)
+   - [Breakdown of Modules/Services and How They Interact](#breakdown-of-modulesservices-and-how-they-interact)
+6. [DevOps & Deployment Plan](#devops--deployment-plan)
+   - [GitHub Actions Configuration](#github-actions-configuration)
+
 ### Local Dev Setup
 
 1.  **Clone the repository:**
